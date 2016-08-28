@@ -5,7 +5,7 @@ Simple IoC container for Javascript.
 - Supports an object oriented programming style.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
-```
+
 ## Basic usage
 
 ```js
