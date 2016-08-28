@@ -1,7 +1,11 @@
-# containor
+# Containor
 
 Simple IoC container for Javascript.
 
+- Supports an object oriented programming style.
+- Does not make any assumptions on your stack.
+- No dependencies! 🎂
+```
 ## Basic usage
 
 ```js
@@ -12,12 +16,20 @@ containor.add(MyClass);
 const myInstance = containor.get(MyClass);
 ```
 
+## Constructor injection
+
+
+```js
+containor.add(OtherClass);
+containor.add(MyClass).withArguments(OtherClass);
+
+// An instance of OtherClass is injected in myInstance's constructor!
+const myInstance = containor.get(MyClass);
+```
 
 ## Todo
 
 - Documentation
-- Setter injection
-- Support functions
-- Evaluate api
+- Checking dependencies without name strings
+- Raw arguments
 - Browser/environment polyfills
-- Check size
