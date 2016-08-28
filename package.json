@@ -1,7 +1,7 @@
 {
   "name": "containor",
   "version": "0.1.0",
-  "description": "Simple OO IoC container for Javascript",
+  "description": "Simple IoC container for Javascript",
   "main": "lib",
   "scripts": {
     "clean": "npm run clean",
@@ -40,6 +40,7 @@
   "homepage": "https://github.com/ngerritsen/containor#readme",
   "devDependencies": {
     "ava": "^0.16.0",
+    "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-builtin-extend": "^1.1.0",
