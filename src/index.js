@@ -1,11 +1,9 @@
-/* global window module */
-
 import Containor from './containor';
 import DependenyRegistry from './dependency-registry';
 import DependencyFactory from './dependency-factory';
 import DependencyResolver from './dependency-resolver';
 
-class ContainorWrapper extends Containor {
+export default class ContainorWrapper extends Containor {
   constructor() {
     const dependencyRegistry = new DependenyRegistry();
     const dependencyFactory = new DependencyFactory();
@@ -16,12 +14,4 @@ class ContainorWrapper extends Containor {
       value: 'Containor'
     });
   }
-}
-
-if (window) {
-  window.Containor = ContainorWrapper;
-}
-
-if (module) {
-  module.exports = ContainorWrapper;
 }
