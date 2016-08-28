@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const env = process.env.NODE_ENV;
 const config = {
   devtool: 'source-map',
-  entry: './src/index.js',
+  entry: './src/web.js',
   output: {
     path: 'dist',
     filename: 'containor.js'
