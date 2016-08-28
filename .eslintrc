@@ -1,0 +1,9 @@
+{
+  "extends": "ngerritsen",
+  "env": {
+    node: true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  }
+}
