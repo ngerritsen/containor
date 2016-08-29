@@ -21,7 +21,7 @@ const myInstance = containor.get(MyClass);
 
 ```js
 containor.add(OtherClass);
-containor.add(MyClass).withArguments(OtherClass);
+containor.add(MyClass).with(OtherClass);
 
 // An instance of OtherClass is injected in myInstance's constructor!
 const myInstance = containor.get(MyClass);

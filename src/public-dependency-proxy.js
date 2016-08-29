@@ -1,6 +1,6 @@
 /**
  * @typedef  {Object}   PublicDependencyProxy
- * @property {Function} withArguments
+ * @property {Function} with
  */
 
 export default class PublicDependencyProxy {
@@ -14,7 +14,7 @@ export default class PublicDependencyProxy {
   /**
    * Puts arguments on dependency
    */
-  withArguments(...args) {
+  with(...args) {
     this._dependency.arguments = args;
   }
 }

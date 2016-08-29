@@ -34,8 +34,8 @@ test('Can use interface to add and get a dependency', (t) => {
 test('Can add and get multiple dependant dependencies', (t) => {
   const containor = new Containor();
 
-  containor.add(TestClassA).withArguments('TestClassCInterface');
-  containor.add(TestClassB).withArguments('TestClassCInterface', TestClassD);
+  containor.add(TestClassA).with('TestClassCInterface');
+  containor.add(TestClassB).with('TestClassCInterface', TestClassD);
   containor.add(TestClassD);
   containor.share('TestClassCInterface', TestClassC);
 

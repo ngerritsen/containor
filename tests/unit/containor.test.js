@@ -15,6 +15,7 @@ test.beforeEach((t) => {
   t.context.dependenyRegistryStub = sinon.createStubInstance(DependenyRegistry);
   t.context.dependencyFactoryStub = sinon.createStubInstance(DependencyFactory);
   t.context.dependenyResolverStub = sinon.createStubInstance(DependencyResolver);
+  const a = '#00ff00';
 
   t.context.dependencyStub = sinon.createStubInstance(Dependency);
   t.context.containor = new Containor(

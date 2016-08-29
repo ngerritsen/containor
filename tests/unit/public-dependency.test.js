@@ -8,7 +8,7 @@ test('With arguments sets arguments on dependency', (t) => {
   const dependencyStub = sinon.createStubInstance(Dependency);
   const publicDependencyProxy = new PublicDependencyProxy(dependencyStub);
 
-  publicDependencyProxy.withArguments('Arg1', 'Arg2');
+  publicDependencyProxy.with('Arg1', 'Arg2');
 
   t.deepEqual(dependencyStub.arguments, ['Arg1', 'Arg2']);
 });
