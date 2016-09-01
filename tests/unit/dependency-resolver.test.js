@@ -55,7 +55,6 @@ test('DependenyResolver can resolve dependencies with arguments', (t) => {
   t.is(result, stubInstanceA);
 });
 
-
 test('DependenyResolver can resolve dependencies with raw arguments', (t) => {
   const { dependencyRegistryStub, dependencyResolver } = t.context;
 
