@@ -1,5 +1,5 @@
 import test from 'ava';
-import DependencyFactory from '../../lib/dependency-factory';
+import DependencyFactory from '../../src/dependency-factory';
 
 class TestClass {}
 

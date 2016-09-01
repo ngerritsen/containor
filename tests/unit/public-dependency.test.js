@@ -1,8 +1,8 @@
 import test from 'ava';
 import sinon from 'sinon';
 
-import PublicDependencyProxy from '../../lib/public-dependency-proxy';
-import Dependency from '../../lib/dependency';
+import PublicDependencyProxy from '../../src/public-dependency-proxy';
+import Dependency from '../../src/dependency';
 
 test('With sets arguments on dependency', (t) => {
   const dependencyStub = sinon.createStubInstance(Dependency);

@@ -1,5 +1,5 @@
 import test from 'ava';
-import Dependency from '../../lib//dependency';
+import Dependency from '../../src//dependency';
 
 class TestClass {}
 

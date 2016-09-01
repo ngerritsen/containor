@@ -1,12 +1,12 @@
 import test from 'ava';
 import sinon from 'sinon';
 
-import Containor from '../../lib/containor';
-import DependenyRegistry from '../../lib/dependency-registry';
-import DependencyFactory from '../../lib/dependency-factory';
-import DependencyResolver from '../../lib/dependency-resolver';
-import Dependency from '../../lib/dependency';
-import PublicDependencyProxy from '../../lib/public-dependency-proxy';
+import Containor from '../../src/containor';
+import DependenyRegistry from '../../src/dependency-registry';
+import DependencyFactory from '../../src/dependency-factory';
+import DependencyResolver from '../../src/dependency-resolver';
+import Dependency from '../../src/dependency';
+import PublicDependencyProxy from '../../src/public-dependency-proxy';
 
 class TestClass {}
 const FIRST = 0;

@@ -1,9 +1,9 @@
 import test from 'ava';
 import sinon from 'sinon';
 
-import Dependency from '../../lib/dependency';
-import DependencyRegistry from '../../lib/dependency-registry';
-import DependenyResolver from '../../lib/dependency-resolver';
+import Dependency from '../../src/dependency';
+import DependencyRegistry from '../../src/dependency-registry';
+import DependenyResolver from '../../src/dependency-resolver';
 
 class TestClass {}
 class TestClassA {}

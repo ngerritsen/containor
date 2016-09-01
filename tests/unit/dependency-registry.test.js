@@ -1,9 +1,9 @@
 import test from 'ava';
 import sinon from 'sinon';
 
-import DependenyRegistry from '../../lib/dependency-registry';
-import Dependency from '../../lib/dependency';
-import { DependencyAlreadyExistsError, DependencyNotFoundError } from '../../lib/errors';
+import DependenyRegistry from '../../src/dependency-registry';
+import Dependency from '../../src/dependency';
+import { DependencyAlreadyExistsError, DependencyNotFoundError } from '../../src/errors';
 
 test.beforeEach((t) => {
   t.context.dependenyRegistry = new DependenyRegistry();
