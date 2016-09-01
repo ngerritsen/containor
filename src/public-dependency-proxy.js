@@ -15,6 +15,13 @@ export default class PublicDependencyProxy {
    * Puts arguments on dependency
    */
   with(...args) {
-    this._dependency.arguments = args;
+    this._dependency.addArguments(args);
+  }
+
+  /**
+   * Puts raw arguments on dependency
+   */
+  raw(...args) {
+    this._dependency.addArguments(args, true);
   }
 }

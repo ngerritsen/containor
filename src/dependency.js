@@ -16,7 +16,7 @@ export default class Dependency {
     this._constructor = constructor;
     this._shared = shared;
 
-    this.arguments = [];
+    this._arguments = [];
     this.instance = null;
   }
 
@@ -25,6 +25,22 @@ export default class Dependency {
    */
   get name() {
     return this._name;
+  }
+
+  /**
+   * @return {string} name
+   */
+  get arguments() {
+    return this._arguments;
+  }
+
+  /**
+   * @param {array}   args
+   * @param {boolean} [raw=false]
+   */
+  addArguments(args, raw = false) {
+    const newArgs = args.map((value) => ({ value, raw }));
+    this._arguments = [...this._arguments, ...newArgs];
   }
 
   /**

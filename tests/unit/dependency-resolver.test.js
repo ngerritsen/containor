@@ -26,7 +26,7 @@ test('DependenyResolver can resolve dependencies without arguments', (t) => {
   const stubInstance = sinon.createStubInstance(TestClass);
   const dependencyStub = sinon.createStubInstance(Dependency);
 
-  dependencyStub.arguments = [];
+  stubDependencyArguments(dependencyStub, []);
   dependencyStub.getInstance.returns(stubInstance);
   dependencyRegistryStub.get.withArgs('TestClass').returns(dependencyStub);
 
@@ -35,10 +35,10 @@ test('DependenyResolver can resolve dependencies without arguments', (t) => {
   t.is(result, stubInstance);
 });
 
-test.only('DependenyResolver can resolve dependencies with arguments', (t) => {
+test('DependenyResolver can resolve dependencies with arguments', (t) => {
   const { dependencyRegistryStub, dependencyResolver } = t.context;
 
-  const dependencyStubA = createDependencyStub([TestClassB, TestClassC]);
+  const dependencyStubA = createDependencyStub([{ value: TestClassB }, { value: TestClassC }]);
   const dependencyStubB = createDependencyStub();
   const dependencyStubC = createDependencyStub();
 
@@ -55,10 +55,28 @@ test.only('DependenyResolver can resolve dependencies with arguments', (t) => {
   t.is(result, stubInstanceA);
 });
 
-test.only('DependenyResolver can resolve dependencies with interface arguments', (t) => {
+
+test('DependenyResolver can resolve dependencies with raw arguments', (t) => {
   const { dependencyRegistryStub, dependencyResolver } = t.context;
 
-  const dependencyStubA = createDependencyStub(['TestClassBInterface']);
+  const dependencyStubA = createDependencyStub([{ value: TestClassB }, { value: 'string', raw: true }]);
+  const dependencyStubB = createDependencyStub();
+
+  dependencyStubA.getInstance.withArgs([stubInstanceB, 'string']).returns(stubInstanceA);
+  dependencyStubB.getInstance.returns(stubInstanceB);
+
+  dependencyRegistryStub.get.withArgs('TestClassA').returns(dependencyStubA);
+  dependencyRegistryStub.get.withArgs('TestClassB').returns(dependencyStubB);
+
+  const result = dependencyResolver.resolve(TestClassA);
+
+  t.is(result, stubInstanceA);
+});
+
+test('DependenyResolver can resolve dependencies with interface arguments', (t) => {
+  const { dependencyRegistryStub, dependencyResolver } = t.context;
+
+  const dependencyStubA = createDependencyStub([{ value: 'TestClassBInterface' }]);
   const dependencyStubB = createDependencyStub();
 
   dependencyStubA.getInstance.withArgs([stubInstanceB]).returns(stubInstanceA);
@@ -72,12 +90,12 @@ test.only('DependenyResolver can resolve dependencies with interface arguments',
   t.is(result, stubInstanceA);
 });
 
-test.only('DependenyResolver can resolve nested dependencies with arguments', (t) => {
+test('DependenyResolver can resolve nested dependencies with arguments', (t) => {
   const { dependencyRegistryStub, dependencyResolver } = t.context;
 
-  const dependencyStubA = createDependencyStub([TestClassB, TestClassC]);
+  const dependencyStubA = createDependencyStub([{ value: TestClassB }, { value: TestClassC }]);
   const dependencyStubB = createDependencyStub();
-  const dependencyStubC = createDependencyStub([TestClassD]);
+  const dependencyStubC = createDependencyStub([{ value: TestClassD }]);
   const dependencyStubD = createDependencyStub();
 
   dependencyStubA.getInstance.withArgs([stubInstanceB, stubInstanceC]).returns(stubInstanceA);
@@ -97,6 +115,10 @@ test.only('DependenyResolver can resolve nested dependencies with arguments', (t
 
 function createDependencyStub(args = []) {
   const dependencyStub = sinon.createStubInstance(Dependency);
-  dependencyStub.arguments = args;
+  stubDependencyArguments(dependencyStub, args);
   return dependencyStub;
+}
+
+function stubDependencyArguments(dependency, args) {
+  sinon.stub(dependency, 'arguments', { get: () => args });
 }

@@ -25,6 +25,8 @@ export default class DependenyResolver {
    * @return {Array}      arguments
    */
   _resolveArguments(dependency) {
-    return dependency.arguments.map(this.resolve.bind(this));
+    return dependency.arguments.map(({ value, raw }) => {
+      return raw ? value : this.resolve(value);
+    });
   }
 }

@@ -38,9 +38,27 @@ const myInstance = containor.get(MyClass);
 const myOtherInstance = containor.get(MyClass);
 ```
 
+## Raw arguments
+
+Some classes need 'regular' arguments like config options or any other values. This is where the raw method is for.
+
+```js
+containor.add(MyClass)
+  .with(OtherClass)
+  .raw('someString', { myConfig: 'hello' });
+```
+
+With and raw are chainable in any order. The order of chaining determines the constructor argument order.
+
+```js
+containor.add(MyClass)
+  .raw('someString')
+  .with(OtherClass)
+  .raw({ myConfig: 'hello' });
+```
+
 ## Todo
 
-- Documentation
+- API reference
 - Checking dependencies without name strings
-- Raw arguments
 - Browser/environment polyfills
