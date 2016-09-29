@@ -6,9 +6,19 @@ Simple IoC container for Javascript.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
-## Basic usage
+## Guide
+
+### Installation
+
+```bash
+npm install containor
+```
+
+### Basic usage
 
 ```js
+import Containor from 'containor';
+
 const containor = new Containor();
 
 containor.add(MyClass);
@@ -16,7 +26,7 @@ containor.add(MyClass);
 const myInstance = containor.get(MyClass);
 ```
 
-## Constructor injection
+### Constructor injection
 
 ```js
 containor.add(OtherClass);
@@ -26,7 +36,7 @@ containor.add(MyClass).with(OtherClass);
 const myInstance = containor.get(MyClass);
 ```
 
-## Singletons
+### Singletons
 
 Sometimes you only want a single shared instance across the whole application.
 
@@ -38,7 +48,7 @@ const myInstance = containor.get(MyClass);
 const myOtherInstance = containor.get(MyClass);
 ```
 
-## Raw arguments
+### Raw arguments
 
 Some classes need 'regular' arguments like config options or any other values. This is where the raw method is for.
 
@@ -56,6 +66,10 @@ containor.add(MyClass)
   .with(OtherClass)
   .raw({ myConfig: 'hello' });
 ```
+
+## Inclusion as separate script in the browser
+
+Containor is not yet hosted on any cdn, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. These scripts will put `Containor` in the global scope (the window object).
 
 ## Todo
 
