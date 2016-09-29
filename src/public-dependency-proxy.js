@@ -13,15 +13,21 @@ export default class PublicDependencyProxy {
   }
   /**
    * Puts arguments on dependency
+   *
+   * @returns {PublicDependencyProxy}
    */
   with(...args) {
     this._dependency.addArguments(args);
+    return this;
   }
 
   /**
    * Puts raw arguments on dependency
+   *
+   * @returns {PublicDependencyProxy}
    */
   raw(...args) {
     this._dependency.addArguments(args, true);
+    return this;
   }
 }

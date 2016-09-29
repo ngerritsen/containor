@@ -25,3 +25,14 @@ test('Raw sets raw arguments on dependency', t => {
   t.deepEqual(dependencyStub.addArguments.firstCall.args[0], ['Arg1', 'Arg2']);
   t.is(dependencyStub.addArguments.firstCall.args[1], true);
 });
+
+test('Can chain raw and with', t => {
+  const dependencyStub = sinon.createStubInstance(Dependency);
+  const publicDependencyProxy = new PublicDependencyProxy(dependencyStub);
+
+  publicDependencyProxy.with(TestArgClass1).raw('Arg2').raw('Arg3');
+
+  t.deepEqual(dependencyStub.addArguments.firstCall.args[0], [TestArgClass1]);
+  t.deepEqual(dependencyStub.addArguments.secondCall.args[0], ['Arg2']);
+  t.deepEqual(dependencyStub.addArguments.thirdCall.args[0], ['Arg3']);
+});
