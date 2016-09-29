@@ -8,6 +8,8 @@ Simple IoC container for Javascript.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
+_Containor is currently ~10kb minified._
+
 ## Guide
 
 ### Installation
@@ -65,7 +67,7 @@ With and raw are chainable in any order. The order of chaining determines the co
 ```js
 containor.add(MyClass)
   .raw('someString')
-  .with(OtherClass)
+  .with(OtherClass, AnotherClass)
   .raw({ myConfig: 'hello' });
 ```
 
@@ -76,3 +78,4 @@ Containor is not yet hosted on any cdn, however if you install containor from np
 ## Todo
 
 - API reference
+- Reduce size?

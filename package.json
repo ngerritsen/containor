@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Simple IoC container for Javascript",
   "main": "lib",
   "scripts": {
