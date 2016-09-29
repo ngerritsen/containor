@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ngerritsen/containor.svg?branch=master)](https://travis-ci.org/ngerritsen/containor)
+
 # Containor
 
 Simple IoC container for Javascript.
