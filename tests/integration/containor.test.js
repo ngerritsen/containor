@@ -1,5 +1,5 @@
 import test from 'ava';
-import Containor from '../../lib';
+import Containor from '../../src';
 
 import { TestClassA, TestClassB, TestClassC, TestClassD } from './test-application';
 
