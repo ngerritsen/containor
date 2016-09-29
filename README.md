@@ -60,5 +60,3 @@ containor.add(MyClass)
 ## Todo
 
 - API reference
-- Checking dependencies without name strings
-- Browser/environment polyfills

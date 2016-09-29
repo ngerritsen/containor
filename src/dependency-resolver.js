@@ -9,12 +9,11 @@ export default class DependenyResolver {
   }
 
   /**
-   * @param  {MatchingElement} matchingElement
-   * @return {Object}          instance
+   * @param  {Function} matchingConstructor
+   * @return {Object}   instance
    */
-  resolve(matchingElement) {
-    const name = matchingElement.name || matchingElement;
-    const dependency = this._dependencyRegistry.get(name);
+  resolve(matchingConstructor) {
+    const dependency = this._dependencyRegistry.get(matchingConstructor);
     const args = this._resolveArguments(dependency);
 
     return dependency.getInstance(args);

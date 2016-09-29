@@ -1,4 +1,5 @@
 import PublicDependencyProxy from './public-dependency-proxy';
+import Dependency from './dependency.js';
 
 /**
  * @typedef  {Object}   Containor
@@ -7,57 +8,49 @@ import PublicDependencyProxy from './public-dependency-proxy';
  * @property {Function} get
  */
 
- /**
-  * @typedef {(Function|string)} MatchingElement
-  */
-
 export default class Containor {
   /**
    * @param {DependenyRegistry}  dependencyRegistry
-   * @param {DependencyFactory}  dependencyFactory
    * @param {DependencyResolver} dependencyResolver
    */
-  constructor(dependencyRegistry, dependencyFactory, dependencyResolver) {
+  constructor(dependencyRegistry, dependencyResolver) {
     this._dependencyRegistry = dependencyRegistry;
-    this._dependencyFactory = dependencyFactory;
     this._dependencyResolver = dependencyResolver;
   }
 
   /**
-   * @param  {MatchingElement}        matchingElement - constructor or interface string
-   * @param  {Function}               [implementingConstructor] - Manditory if matchingElement is interface string
+   * @param  {Function}               dependencyConstructor
    * @return {PublicDependencyProxy}  PublicDependencyProxy
    *
    * @throws {DependencyAlreadyExistsError}
    */
-  add(matchingElement, implementingConstructor) {
-    const dependency = this._dependencyFactory.create(matchingElement, implementingConstructor);
-    this._dependencyRegistry.register(dependency);
+  add(dependencyConstructor) {
+    const dependency = new Dependency(dependencyConstructor);
 
+    this._dependencyRegistry.register(dependency);
     return new PublicDependencyProxy(dependency);
   }
 
   /**
-   * @param {MatchingElement}         matchingElement - constructor or interface string
-   * @param {Function}                [implementingConstructor] - Manditory if matchingElement is interface string
-   * @return {PublicDependencyProxy}  PublicDependencyProxy
+   * @param   {Function}               dependencyConstructor
+   * @return  {PublicDependencyProxy}  PublicDependencyProxy
    *
    * @throws {DependencyAlreadyExistsError}
    */
-  share(matchingElement, implementingConstructor) {
-    const dependency = this._dependencyFactory.create(matchingElement, implementingConstructor, true);
-    this._dependencyRegistry.register(dependency);
+  share(dependencyConstructor) {
+    const dependency = new Dependency(dependencyConstructor, true);
 
+    this._dependencyRegistry.register(dependency);
     return new PublicDependencyProxy(dependency);
   }
 
   /**
-   * @param  {MatchingElement} matchingElement
-   * @return {Object}          instance
+   * @param  {Function} matchingConstructor
+   * @return {Object}   instance
    *
    * @throws {DependencyNotFoundError}
    */
-  get(matchingElement) {
-    return this._dependencyResolver.resolve(matchingElement);
+  get(matchingConstructor) {
+    return this._dependencyResolver.resolve(matchingConstructor);
   }
 }

@@ -1,6 +1,7 @@
 /**
  * @typedef  {Object}   PublicDependencyProxy
  * @property {Function} with
+ * @property {Function} raw
  */
 
 export default class PublicDependencyProxy {
@@ -10,7 +11,6 @@ export default class PublicDependencyProxy {
   constructor(dependency) {
     this._dependency = dependency;
   }
-
   /**
    * Puts arguments on dependency
    */

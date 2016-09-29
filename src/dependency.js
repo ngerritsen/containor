@@ -1,19 +1,18 @@
 /**
  * @typedef  {Object}   Dependency
- * @property {boolean}  name
  * @property {Array}    arguments
  * @property {Function} getInstance
+ * @property {Function} addArguments
+ * @property {Function} dependencyConstructor
  */
 
 export default class Dependency {
   /**
-   * @param {string}      name
-   * @param {constructor} constructor
-   * @param {shared}      [shared=false]
+   * @param {Function}  dependencyConstructor
+   * @param {shared}    [shared=false]
    */
-  constructor(name, constructor, shared = false) {
-    this._name = name;
-    this._constructor = constructor;
+  constructor(dependencyConstructor, shared = false) {
+    this._constructor = dependencyConstructor;
     this._shared = shared;
 
     this._arguments = [];
@@ -21,14 +20,14 @@ export default class Dependency {
   }
 
   /**
-   * @return {string} name
+   * @return {Function} constructor
    */
-  get name() {
-    return this._name;
+  get dependencyConstructor() {
+    return this._constructor;
   }
 
   /**
-   * @return {string} name
+   * @return {Array} arguments
    */
   get arguments() {
     return this._arguments;
@@ -39,7 +38,7 @@ export default class Dependency {
    * @param {boolean} [raw=false]
    */
   addArguments(args, raw = false) {
-    const newArgs = args.map((value) => ({ value, raw }));
+    const newArgs = args.map(value => ({ value, raw }));
     this._arguments = [...this._arguments, ...newArgs];
   }
 
@@ -52,7 +51,7 @@ export default class Dependency {
       return this._getSharedInstance(args);
     }
 
-    return Reflect.construct(this._constructor, args);
+    return new this._constructor(...args);
   }
 
   /**
@@ -62,7 +61,7 @@ export default class Dependency {
    */
   _getSharedInstance(args = []) {
     if (!this._instance) {
-      this._instance = Reflect.construct(this._constructor, args);
+      this._instance = new this._constructor(...args);
     }
 
     return this._instance;

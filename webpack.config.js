@@ -23,7 +23,8 @@ const config = {
 };
 
 if (env === 'production') {
-  Reflect.deleteProperty(config, 'devtool');
+  delete config.devtool;
+
   config.output.filename = 'containor.min.js';
   config.plugins.push(new webpack.optimize.UglifyJsPlugin());
 }

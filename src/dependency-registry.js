@@ -20,17 +20,17 @@ export default class DependenyRegistry {
   }
 
   /**
-   * @param   {string}      name
+   * @param   {Fucntion}    matchingConstructor
    * @returns {Dependency}  dependency
    */
-  get(name) {
-    const dependency = this._findDependency(name);
+  get(matchingConstructor) {
+    const dependency = this._findDependency(matchingConstructor);
 
     if (!dependency) {
-      throw new DependencyNotFoundError(name);
+      throw new DependencyNotFoundError(matchingConstructor.name);
     }
 
-    return this._findDependency(name);
+    return this._findDependency(matchingConstructor);
   }
 
   /**
@@ -40,18 +40,18 @@ export default class DependenyRegistry {
    * @throws {DependencyAlreadyExistsError}
    */
   _validateIfUnique(dependency) {
-    if (this._findDependency(dependency.name)) {
-      throw new DependencyAlreadyExistsError(dependency.name);
+    if (this._findDependency(dependency.dependencyConstructor)) {
+      throw new DependencyAlreadyExistsError(dependency.dependencyConstructor.name);
     }
   }
 
   /**
    * @private
-   * @param  {string}             name
+   * @param  {Function}           matchingConstructor
    * @return {(Object|undefined)} instance
    */
-  _findDependency(name) {
-    return this._dependencies.find((dep) => dep.name === name);
+  _findDependency(matchingConstructor) {
+    return this._dependencies.find(dep => dep.dependencyConstructor === matchingConstructor);
   }
 
   /**

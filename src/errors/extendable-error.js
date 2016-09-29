@@ -2,11 +2,11 @@ export default class ExtendableError extends Error {
   constructor(message = '') {
     super(message);
 
-    Reflect.defineProperty(this, 'message', {
+    Object.defineProperty(this, 'message', {
       value: message
     });
 
-    Reflect.defineProperty(this, 'name', {
+    Object.defineProperty(this, 'name', {
       value: this.constructor.name
     });
 
@@ -15,7 +15,7 @@ export default class ExtendableError extends Error {
       return;
     }
 
-    Reflect.defineProperty(this, 'stack', {
+    Object.defineProperty(this, 'stack', {
       value: new Error(message).stack
     });
   }
