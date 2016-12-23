@@ -5,7 +5,7 @@ function dep(...args) {
   return args
 }
 
-class OoDep {
+class Dep {
   constructor(...args) {
     this.args = args
   }
@@ -44,7 +44,7 @@ test('Get a dependency with nested dependencies.', t => {
 test('Get a class dependency with nested dependencies.', t => {
   const container = t.context.container
 
-  container.add('dep', OoDep, ['foo'])
+  container.add('dep', Dep, ['foo'])
 
   t.deepEqual(container.get('dep').args, ['foo'])
 })
