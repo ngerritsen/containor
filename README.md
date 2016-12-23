@@ -23,8 +23,10 @@ npm install containor
 ```js
 import createContainer from 'containor'
 
-class foo() {
-  return { message: 'foo' }
+class Foo {
+  constructor() {
+    this.message = 'foo'
+  }
 }
 
 function bar(foo) {
@@ -35,8 +37,8 @@ function bar(foo) {
 
 const containor = createContainer()
 
-containor.add('foo', foo) // Foo can be a function or a class, it will be invoked with 'new' if possible
-containor.add('bar', bar, ['foo'])
+containor.add('Foo', Foo) // Foo can be a function or a class, it will be invoked with 'new' if possible
+containor.add('bar', bar, ['Foo'])
 
 const barInstance = containor.get('bar') // An instance of bar with an instance of foo as an argument
 ```
@@ -58,8 +60,9 @@ const baz = containor.get('Baz') // Your manually constructed version of baz ğŸ˜
 
 Containor is not yet hosted on any cdn, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. These scripts will put `createContainer` in the global scope (the window object).
 
-## API reference
+## API
 
-### createContainer(name: String) => container: Container
-### container.add(name: String, constructor: Function, [dependencies: Array])
-### container.get(name: String) => instance
+### `createContainer(name: String) => container: Container`
+
+### `.add(name: String, constructor: Function, [dependencies: Array])`
+### `.get(name: String) => instance`
