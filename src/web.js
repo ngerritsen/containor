@@ -1,5 +1,5 @@
 /* global window */
 
-import Containor from './index';
+import createContainer from './container'
 
-window.Containor = Containor;
+window.createContainer = createContainer

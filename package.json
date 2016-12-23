@@ -1,18 +1,20 @@
 {
   "name": "containor",
-  "version": "0.3.5",
+  "version": "1.0.0-beta",
   "description": "Simple IoC container for Javascript",
-  "main": "lib",
+  "main": "lib/container",
+  "engines": {
+    "node": ">7"
+  },
   "scripts": {
-    "clean": "npm run clean",
     "clean:node": "mkdir -p lib; rm -Rf lib/*",
     "clean:web": "mkdir -p dist; rm -Rf dist/*",
     "build": "npm run build:node; npm run build:web",
     "build:node": "npm run clean:node; babel src --out-dir lib",
     "build:web": "npm run clean:web; webpack; NODE_ENV=production webpack",
     "watch": "npm run clean:node; babel src --out-dir lib --watch",
-    "test": "ava  --require babel-register --verbose",
-    "test:watch": "ava --require babel-register --verbose --watch",
+    "test": "ava --verbose",
+    "test:watch": "ava --verbose --watch",
     "lint": "eslint ."
   },
   "repository": {
@@ -25,12 +27,7 @@
     "dependency",
     "injection",
     "ioc",
-    "container",
-    "oo",
-    "object",
-    "oriented",
-    "interfaces",
-    "inversion"
+    "container"
   ],
   "author": "Niels Gerritsen",
   "license": "ISC",
@@ -43,19 +40,23 @@
     "lib"
   ],
   "devDependencies": {
-    "ava": "^0.16.0",
+    "ava": "^0.17.0",
     "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
-    "babel-plugin-transform-builtin-extend": "^1.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-env": "^1.1.4",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-es2016": "^6.16.0",
     "babel-register": "^6.14.0",
     "eslint": "^3.4.0",
-    "eslint-config-ngerritsen": "^0.1.8",
+    "eslint-config-ngerritsen": "^1.0.2",
+    "eslint-plugin-filenames": "^1.1.0",
+    "eslint-plugin-import": "^2.2.0",
     "sinon": "^1.17.5",
     "webpack": "^1.13.2"
   },
-  "dependencies": {}
+  "ava": {
+    "require": ["babel-register"]
+  }
 }

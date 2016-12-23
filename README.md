@@ -4,11 +4,11 @@
 
 Simple IoC container for Javascript.
 
-- Supports an object oriented programming style.
+- Supports any programming style.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
-_Containor is currently ~10kb minified._
+_Containor just about ~4kb minified!_
 
 ## Guide
 
@@ -21,61 +21,45 @@ npm install containor
 ### Basic usage
 
 ```js
-import Containor from 'containor';
+import createContainer from 'containor'
 
-const containor = new Containor();
+class foo() {
+  return { message: 'foo' }
+}
 
-containor.add(MyClass);
+function bar(foo) {
+  return {
+    fooMessage: foo.message
+  }
+}
 
-const myInstance = containor.get(MyClass);
+const containor = createContainer()
+
+containor.add('foo', foo) // Foo can be a function or a class, it will be invoked with 'new' if possible
+containor.add('bar', bar, ['foo'])
+
+const barInstance = containor.get('bar') // An instance of bar with an instance of foo as an argument
 ```
 
-### Constructor injection
+### Custom constuction
+
+Sometimes you need to pass in other dependencies then just instances from the container (like config files or external dependencies). You can just pass in a custom function:
 
 ```js
-containor.add(OtherClass);
-containor.add(MyClass).with(OtherClass);
+containor.add('Baz', () => {
+  const foo = containor.get('foo')
+  return new Baz(foo, config)
+})
 
-// An instance of OtherClass is injected in myInstance's constructor!
-const myInstance = containor.get(MyClass);
-```
-
-### Singletons
-
-Sometimes you only want a single shared instance across the whole application.
-
-```js
-containor.share(MyClass);
-
-// An myOtherInstance is the same instance as myInstance!
-const myInstance = containor.get(MyClass);
-const myOtherInstance = containor.get(MyClass);
-```
-
-### Raw arguments
-
-Some classes need 'regular' arguments like config options or any other values. This is where the raw method is for.
-
-```js
-containor.add(MyClass)
-  .with(OtherClass)
-  .raw('someString', { myConfig: 'hello' });
-```
-
-With and raw are chainable in any order. The order of chaining determines the constructor argument order.
-
-```js
-containor.add(MyClass)
-  .raw('someString')
-  .with(OtherClass, AnotherClass)
-  .raw({ myConfig: 'hello' });
+const baz = containor.get('Baz') // Your manually constructed version of baz 😎
 ```
 
 ## Inclusion as separate script in the browser
 
-Containor is not yet hosted on any cdn, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. These scripts will put `Containor` in the global scope (the window object).
+Containor is not yet hosted on any cdn, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. These scripts will put `createContainer` in the global scope (the window object).
 
-## Todo
+## API reference
 
-- API reference
-- Reduce size?
+### createContainer(name: String) => container: Container
+### container.add(name: String, constructor: Function, [dependencies: Array])
+### container.get(name: String) => instance

@@ -1,9 +1,12 @@
 {
   "extends": "ngerritsen",
   "env": {
-    node: true
+    "node": true
   },
   "parserOptions": {
     "sourceType": "module"
+  },
+  "rules": {
+    "operator-linebreak": [2, "after"]
   }
 }
