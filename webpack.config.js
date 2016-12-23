@@ -1,6 +1,6 @@
-const webpack = require('webpack');
+const webpack = require('webpack')
 
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV
 const config = {
   devtool: 'source-map',
   entry: './src/web.js',
@@ -20,13 +20,13 @@ const config = {
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin()
   ]
-};
-
-if (env === 'production') {
-  delete config.devtool;
-
-  config.output.filename = 'containor.min.js';
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin());
 }
 
-module.exports = config;
+if (env === 'production') {
+  delete config.devtool
+
+  config.output.filename = 'containor.min.js'
+  config.plugins.push(new webpack.optimize.UglifyJsPlugin())
+}
+
+module.exports = config
