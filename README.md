@@ -8,7 +8,7 @@ Simple IoC container for Javascript.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
-_Containor just about ~4kb minified!_
+_Containor weighs just ~4kb minified!_
 
 ## Guide
 
@@ -37,7 +37,8 @@ function bar(foo) {
 
 const containor = createContainer()
 
-containor.add('Foo', Foo) // Foo can be a function or a class, it will be invoked with 'new' if possible
+// A dependency can be a function or a class, it will be invoked with 'new' if possible.
+containor.add('Foo', Foo)
 containor.add('bar', bar, ['Foo'])
 
 const barInstance = containor.get('bar') // An instance of bar with an instance of foo as an argument
@@ -45,7 +46,7 @@ const barInstance = containor.get('bar') // An instance of bar with an instance 
 
 ### Custom constuction
 
-Sometimes you need to pass in other dependencies then just instances from the container (like config files or external dependencies). You can just pass in a custom function:
+Sometimes you need to pass in other arguments than just instances from the container (like configs or external dependencies). You can pass in a custom function:
 
 ```js
 containor.add('Baz', () => {
@@ -56,9 +57,9 @@ containor.add('Baz', () => {
 const baz = containor.get('Baz') // Your manually constructed version of baz 😎
 ```
 
-## Inclusion as separate script in the browser
+## Including as a script tag
 
-Containor is not yet hosted on any cdn, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. These scripts will put `createContainer` in the global scope (the window object).
+Containor is not hosted on any cdn yet, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. These scripts will put `createContainer` in the global scope (on the window object).
 
 ## API
 
