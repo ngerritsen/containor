@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Simple IoC container for Javascript",
   "main": "lib/container",
   "engines": {
@@ -9,6 +9,7 @@
   "scripts": {
     "clean:node": "mkdir -p lib; rm -Rf lib/*",
     "clean:web": "mkdir -p dist; rm -Rf dist/*",
+    "publish": "npm run build; npm publish",
     "build": "npm run build:node; npm run build:web",
     "build:node": "npm run clean:node; babel src --out-dir lib",
     "build:web": "npm run clean:web; webpack; NODE_ENV=production webpack",
