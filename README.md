@@ -35,13 +35,29 @@ function bar(foo) {
   }
 }
 
-const containor = createContainer()
+const container = createContainer()
 
 // A dependency can be a function or a class, it will be invoked with 'new' if possible.
-containor.add('Foo', Foo)
-containor.add('bar', bar, ['Foo'])
+container.add('Foo', Foo)
+container.add('bar', bar, ['Foo'])
 
-const barInstance = containor.get('bar') // An instance of bar with an instance of foo as an argument
+const barInstance = container.get('bar') // An instance of bar with an instance of Foo as an argument
+```
+
+### Singletons
+
+Some dependencies you want to use the same instance of everywhere (for instance one that stores state):
+
+```js
+function counter() {
+  let count = 0
+  return { increment: () => ++count }
+}
+
+container.share('counter', counter);
+
+container.get('counter').increment() // returns '1'
+container.get('counter').increment() // returns '2' because it's the same instance 👍
 ```
 
 ### Custom constuction
@@ -49,12 +65,12 @@ const barInstance = containor.get('bar') // An instance of bar with an instance 
 Sometimes you need to pass in other arguments than just instances from the container (like configs or external dependencies). You can pass in a custom function:
 
 ```js
-containor.add('Baz', () => {
-  const foo = containor.get('foo')
+container.add('Baz', () => {
+  const foo = container.get('foo')
   return new Baz(foo, config)
 })
 
-const baz = containor.get('Baz') // Your manually constructed version of baz 😎
+const baz = container.get('Baz') // Your manually constructed version of Baz 😎
 ```
 
 ## Including as a script tag

@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Simple IoC container for Javascript",
   "main": "lib/container",
   "engines": {
@@ -13,7 +13,7 @@
     "build:node": "npm run clean:node; babel src --out-dir lib",
     "build:web": "npm run clean:web; webpack; NODE_ENV=production webpack",
     "watch": "npm run clean:node; babel src --out-dir lib --watch",
-    "test": "ava --verbose",
+    "test": "npm run lint; ava --verbose",
     "test:watch": "ava --verbose --watch",
     "lint": "eslint ."
   },
