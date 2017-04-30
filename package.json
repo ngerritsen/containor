@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Simple IoC container for Javascript",
   "main": "lib/container",
   "engines": {
@@ -10,9 +10,9 @@
     "clean:node": "mkdir -p lib; rm -Rf lib/*",
     "clean:web": "mkdir -p dist; rm -Rf dist/*",
     "build": "npm run build:node; npm run build:web",
-    "build:node": "npm run clean:node; babel src --out-dir lib",
-    "build:web": "npm run clean:web; webpack; NODE_ENV=production webpack",
-    "watch": "npm run clean:node; babel src --out-dir lib --watch",
+    "build:node": "npm run clean:node; buble -i src -o lib",
+    "build:web": "npm run clean:web; rollup -c rollup.config.js; NODE_ENV=production rollup -c rollup.config.js",
+    "watch": "npm run clean:node; buble -i src -o lib -w",
     "test": "npm run lint; ava --verbose",
     "test:watch": "ava --verbose --watch",
     "lint": "eslint ."
@@ -43,7 +43,6 @@
     "ava": "^0.17.0",
     "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
-    "babel-loader": "^6.2.5",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-env": "^1.1.4",
@@ -54,12 +53,16 @@
     "eslint-config-ngerritsen": "^1.0.2",
     "eslint-plugin-filenames": "^1.1.0",
     "eslint-plugin-import": "^2.2.0",
-    "sinon": "^1.17.5",
-    "webpack": "^1.13.2"
+    "rollup": "^0.41.6",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^1.0.2",
+    "sinon": "^1.17.5"
   },
   "ava": {
     "require": [
       "babel-register"
     ]
-  }
+  },
+  "dependencies": {}
 }

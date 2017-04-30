@@ -64,6 +64,18 @@ test('Manually resolve a dependency.', t => {
   t.deepEqual(container.get('dep'), ['foo', 'test'])
 })
 
+test('Lazy waits for a dependency to be registered.', t => {
+  const container = t.context.container
+
+  t.plan(1)
+
+  container.lazy('baz', baz => {
+    t.is(baz, 'baz')
+  })
+
+  container.add('baz', () => 'baz')
+})
+
 test('Share adds a singleton dependency.', t => {
   const container = t.context.container
 

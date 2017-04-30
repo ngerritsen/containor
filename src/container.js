@@ -12,6 +12,7 @@ import { validateArguments, invariant } from './utils'
  */
 export default function createContainer() { // eslint-disable-line max-statements
   let dependencies = []
+  let subscribers = []
 
   /**
    * Registers a depedency at the container.
@@ -24,6 +25,7 @@ export default function createContainer() { // eslint-disable-line max-statement
     validateRegistrationArguments(name, func, args, 'add')
     const dependency = { name, func, args }
     dependencies = [...dependencies, dependency]
+    subscribers.forEach(subscriber => subscriber())
   }
 
   /**
@@ -37,6 +39,7 @@ export default function createContainer() { // eslint-disable-line max-statement
     validateRegistrationArguments(name, func, args, 'share')
     const dependency = { name, func, args, shared: true }
     dependencies = [...dependencies, dependency]
+    subscribers.forEach(subscriber => subscriber())
   }
 
   /**
@@ -50,6 +53,22 @@ export default function createContainer() { // eslint-disable-line max-statement
     const dependency = findDependency(name)
     invariant(dependency, `Dependency '${name}' does not exist.`)
     return instantiate(dependency)
+  }
+
+  /**
+   * Wait for the dependency to be added to the container.
+   *
+   * @param {string}    name  Dependency name
+   * @param {Function}  cb    Callback to call when registered
+   */
+  function lazy(name, cb) {
+    subscribers = [...subscribers, () => {
+      const dependency = findDependency(name)
+
+      if (dependency) {
+        return cb(instantiate(dependency))
+      }
+    }]
   }
 
   function instantiate({ name, func, instance, args, shared }) {
@@ -94,5 +113,5 @@ export default function createContainer() { // eslint-disable-line max-statement
     invariant(!findDependency(name), `Dependency '${name}' already exists.`)
   }
 
-  return { add, share, get }
+  return { add, share, get, lazy }
 }
