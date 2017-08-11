@@ -62,13 +62,18 @@ module.exports = function createContainer() { // eslint-disable-line max-stateme
    * @param {Function}  cb    Callback to call when registered
    */
   function lazy(name, cb) {
-    subscribers = [...subscribers, () => {
+    const subscriber = () => {
       const dependency = findDependency(name)
 
       if (dependency) {
+        subscribers = subscribers.filter(s => s !== subscriber)
         return cb(instantiate(dependency))
       }
-    }]
+    }
+
+    subscribers = [...subscribers, subscriber]
+
+    subscriber()
   }
 
   function instantiate({ name, func, instance, args, shared }) {

@@ -76,6 +76,31 @@ test('Lazy waits for a dependency to be registered.', t => {
   container.add('baz', () => 'baz')
 })
 
+test('Lazy only resolves once.', t => {
+  const container = t.context.container
+
+  t.plan(1)
+
+  container.lazy('baz', baz => {
+    t.is(baz, 'baz')
+  })
+
+  container.add('baz', () => 'baz')
+  container.add('other', () => 'other')
+})
+
+test('Lazy immediately resolves when the dependency is already there.', t => {
+  const container = t.context.container
+
+  t.plan(1)
+
+  container.add('baz', () => 'baz')
+
+  container.lazy('baz', baz => {
+    t.is(baz, 'baz')
+  })
+})
+
 test('Share adds a singleton dependency.', t => {
   const container = t.context.container
 

@@ -75,7 +75,7 @@ const baz = container.get('Baz') // Your manually constructed version of Baz ðŸ˜
 
 ### Lazy resolving
 
-This is handy for client side code, where scripts load asynchronously. Lazy waits for the dependency to be registered, then runs the callback.
+This is handy for client side code, where scripts load asynchronously. Lazy waits for the dependency to be registered, then runs the callback. If the dependency is already there it will resolve immediately.
 
 ```js
 container.lazy('Foo', foo => {
