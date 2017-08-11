@@ -1,5 +1,2 @@
 /* global window */
-
-import createContainer from './container'
-
-window.createContainer = createContainer
+window.createContainer = require('./container.js')

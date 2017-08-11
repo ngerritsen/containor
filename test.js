@@ -1,5 +1,5 @@
-import test from 'ava'
-import createContainer from './src/container'
+const test = require('ava')
+const createContainer = require('./src/container')
 
 function dep(...args) {
   return args

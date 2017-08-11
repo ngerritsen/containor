@@ -1,13 +1,11 @@
-import buble from 'rollup-plugin-buble'
-import resolve from 'rollup-plugin-node-resolve'
-import uglify from 'rollup-plugin-uglify'
+const buble = require('rollup-plugin-buble')
+const resolve = require('rollup-plugin-node-resolve')
+const uglify = require('rollup-plugin-uglify')
 
 const config = {
   entry: 'src/web.js',
   plugins: [
-    buble({
-      objectAssign: 'Object.assign'
-    }),
+    buble(),
     resolve({
       jsnext: true
     })
@@ -27,4 +25,4 @@ if (process.env.NODE_ENV === 'production') {
   config.targets[0].dest = 'dist/containor.min.js'
 }
 
-export default config
+module.exports = config

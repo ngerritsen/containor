@@ -1,6 +1,6 @@
 const indices = ['First', 'Second', 'Third']
 
-export function validateArguments(args, func, options) {
+function validateArguments(args, func, options) {
   Object.keys(options).map((name, index) => {
     const [expected, required] = options[name]
     const value = args[index]
@@ -14,8 +14,13 @@ export function validateArguments(args, func, options) {
   })
 }
 
-export function invariant(condition, message) {
+function invariant(condition, message) {
   if (!condition) {
     throw new Error(message)
   }
+}
+
+module.exports = {
+  validateArguments,
+  invariant
 }

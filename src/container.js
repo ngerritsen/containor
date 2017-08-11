@@ -1,4 +1,4 @@
-import { validateArguments, invariant } from './utils'
+const { validateArguments, invariant } = require('./utils')
 
 /**
  * @typedef   {Object}    Container
@@ -10,7 +10,7 @@ import { validateArguments, invariant } from './utils'
 /**
  * @return {Container}
  */
-export default function createContainer() { // eslint-disable-line max-statements
+module.exports = function createContainer() { // eslint-disable-line max-statements
   let dependencies = []
   let subscribers = []
 
@@ -99,7 +99,7 @@ export default function createContainer() { // eslint-disable-line max-statement
   function setInstance(name, instance) {
     return dependencies.map(dep =>
       name === dep.name ?
-        { ...dep, instance } :
+        Object.assign({}, dep, { instance }) :
         dep
     )
   }
