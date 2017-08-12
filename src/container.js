@@ -1,25 +1,32 @@
 const { validateArguments, invariant } = require('./utils')
 
 /**
+ * @typedef {Object}  RawArgument
+ * @property {*}      value
+ */
+
+/**
  * @typedef   {Object}    Container
  * @property  {Function}  add
  * @property  {Function}  share
  * @property  {Function}  get
  */
 
+const RAW = {}
+
 /**
  * @return {Container}
  */
-module.exports = function createContainer() { // eslint-disable-line max-statements
+function createContainer() { // eslint-disable-line max-statements
   let dependencies = []
   let subscribers = []
 
   /**
    * Registers a depedency at the container.
    *
-   * @param {string}    name      Dependency name
-   * @param {Function}  func      Constructor or factory function
-   * @param {Array}     [args=[]] Dependency arguments to inject
+   * @param {string}    name                          Dependency name
+   * @param {Function}  func                          Constructor or factory function
+   * @param {Array.<(string|RawArgument)>} [args=[]]  Dependency arguments to inject
    */
   function add(name, func, args = []) {
     validateRegistrationArguments(name, func, args, 'add')
@@ -85,7 +92,7 @@ module.exports = function createContainer() { // eslint-disable-line max-stateme
   }
 
   function create(func, args) {
-    const resolvedArgs = args.map(get)
+    const resolvedArgs = args.map(resolve)
     return func.hasOwnProperty('prototype') ?
       new func(...resolvedArgs) : // eslint-disable-line new-cap
       func(...resolvedArgs)
@@ -109,6 +116,15 @@ module.exports = function createContainer() { // eslint-disable-line max-stateme
     )
   }
 
+  function resolve(arg) {
+    return isRawArg(arg) ? arg.value : get(arg)
+  }
+
+  function isRawArg(arg) {
+    // eslint-disable-next-line no-underscore-dangle
+    return arg && typeof arg === 'object' && arg._raw === RAW
+  }
+
   function validateRegistrationArguments(name, func, args, type) {
     validateArguments([name, func, args], type, {
       name: ['string', true],
@@ -120,3 +136,14 @@ module.exports = function createContainer() { // eslint-disable-line max-stateme
 
   return { add, share, get, lazy }
 }
+
+/**
+ * @param {*} value
+ *
+ * @returns {RawArgument}
+ */
+function raw(value) {
+  return { _raw: RAW, value }
+}
+
+module.exports = { createContainer, raw }

@@ -1,19 +1,20 @@
 const buble = require('rollup-plugin-buble')
-const resolve = require('rollup-plugin-node-resolve')
+const nodeResolve = require('rollup-plugin-node-resolve')
+const commonjs = require('rollup-plugin-commonjs')
 const uglify = require('rollup-plugin-uglify')
 
 const config = {
-  entry: 'src/web.js',
+  entry: 'src/container.js',
   plugins: [
     buble(),
-    resolve({
-      jsnext: true
-    })
+    nodeResolve(),
+    commonjs()
   ],
   targets: [
     {
       dest: 'dist/containor.js',
       format: 'iife',
+      moduleName: 'Containor',
       sourceMap: true
     }
   ]

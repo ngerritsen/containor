@@ -5,10 +5,11 @@
 Simple IoC container for Javascript.
 
 - Supports any programming style.
+- Lazy resolving for async scripts.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
-_Containor weighs just ~1kb minified!_
+_Containor weighs just ~1.8kb minified!\*_
 
 ## Guide
 
@@ -21,7 +22,7 @@ npm install containor
 ### Basic usage
 
 ```js
-import createContainer from 'containor'
+import { createContainer } from 'containor'
 
 class Foo {
   constructor() {
@@ -60,6 +61,25 @@ container.get('counter').increment() // returns '1'
 container.get('counter').increment() // returns '2' because it's the same instance 👍
 ```
 
+### Raw arguments
+
+Sometimes you just want to pass a raw value to a dependency instead of just other dependencies, you can do this using `raw`:
+
+```js
+import { raw } from 'containor'
+
+function displayMessage(logger, message) {
+  logger.log(message)
+}
+
+container.add('logger', () => console);
+container.add('displayMessage', displayMessage, ['logger', raw('Hello world!')])
+
+container.get('displayMessage') // Logs "Hello world!"
+```
+
+By adding an argument using `raw(value)`, it will just pass the value to the dependency instead of trying to resolve it with the container.
+
 ### Custom constuction
 
 Sometimes you need to pass in other arguments than just instances from the container (like configs or external dependencies). You can pass in a custom function:
@@ -87,7 +107,12 @@ container.add('Foo', Foo)
 
 ## Including as a script tag
 
-Containor is not hosted on any cdn yet, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. These scripts will put `createContainer` in the global scope (on the window object).
+Containor is not hosted on any cdn yet, however if you install containor from npm there is a `dist` folder with a `containor.js` (for development) and `containor.min.js`. When included, containor put on the global window object as `Containor`.
+
+```js
+const container = Containor.createContainer()
+const rawArgument = Containor.raw(123)
+```
 
 ## API
 
@@ -95,3 +120,5 @@ Containor is not hosted on any cdn yet, however if you install containor from np
 
 ### `.add(name: String, constructor: Function, [dependencies: Array])`
 ### `.get(name: String) => instance`
+
+_\* Size measured by bundling with rollup and bublé with uglify._

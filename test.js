@@ -1,5 +1,5 @@
 const test = require('ava')
-const createContainer = require('./src/container')
+const { createContainer, raw } = require('./src/container')
 
 function dep(...args) {
   return args
@@ -99,6 +99,14 @@ test('Lazy immediately resolves when the dependency is already there.', t => {
   container.lazy('baz', baz => {
     t.is(baz, 'baz')
   })
+})
+
+test('Using raw adds a raw argument', t => {
+  const container = t.context.container
+
+  container.add('baz', val => val, [raw(1)])
+
+  t.is(container.get('baz'), 1)
 })
 
 test('Share adds a singleton dependency.', t => {
