@@ -9,7 +9,7 @@ Simple IoC container for Javascript.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
-_Containor weighs just ~1.8kb minified!\*_
+_Containor weighs just ~2.2kb minified!\*_
 
 ## Guide
 
@@ -95,7 +95,7 @@ const baz = container.get('Baz') // Your manually constructed version of Baz �
 
 ### Lazy resolving
 
-This is handy for client side code, where scripts load asynchronously. Lazy waits for the dependency to be registered, then runs the callback. If the dependency is already there it will resolve immediately.
+This is handy for client side code, where scripts load asynchronously. Lazy waits for the dependency (and all of it's sub-dependencies, this can be nested infinitely deep) to be registered, then runs the callback. If the dependency is already there it will resolve immediately.
 
 ```js
 container.lazy('Foo', foo => {
@@ -121,4 +121,4 @@ const rawArgument = Containor.raw(123)
 ### `.add(name: String, constructor: Function, [dependencies: Array])`
 ### `.get(name: String) => instance`
 
-_\* Size measured by bundling with rollup and bublé with uglify._
+_\* Size measured by bundling with rollup and bublé with uglify. I will be even less when gzipped_

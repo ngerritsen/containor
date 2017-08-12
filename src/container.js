@@ -74,7 +74,7 @@ function createContainer() { // eslint-disable-line max-statements
 
       if (dependency) {
         subscribers = subscribers.filter(s => s !== subscriber)
-        return cb(instantiate(dependency))
+        return instantiateLazy(dependency, cb)
       }
     }
 
@@ -91,17 +91,39 @@ function createContainer() { // eslint-disable-line max-statements
     return create(func, args)
   }
 
+  function instantiateLazy({ name, func, instance, args, shared }, cb) {
+    if (shared) {
+      return cb(instance) || createSingleLazy(name, func, instance, args, cb)
+    }
+
+    return createLazy(func, args, cb)
+  }
+
   function create(func, args) {
-    const resolvedArgs = args.map(resolve)
-    return func.hasOwnProperty('prototype') ?
-      new func(...resolvedArgs) : // eslint-disable-line new-cap
-      func(...resolvedArgs)
+    return construct(func, resolve(args))
+  }
+
+  function createLazy(func, args, cb) {
+    resolveLazy(args, resolvedArgs => cb(construct(func, resolvedArgs)))
   }
 
   function createSingle(name, func, instance, args) {
     const newInstance = create(func, args)
     dependencies = setInstance(name, newInstance)
     return newInstance
+  }
+
+  function createSingleLazy(name, func, instance, args, cb) {
+    createLazy(func, args, newInstance => {
+      setInstance(name, newInstance)
+      cb(newInstance)
+    })
+  }
+
+  function construct(func, args) {
+    return func.hasOwnProperty('prototype') ?
+      new func(...args) : // eslint-disable-line new-cap
+      func(...args)
   }
 
   function findDependency(name) {
@@ -116,8 +138,16 @@ function createContainer() { // eslint-disable-line max-statements
     )
   }
 
-  function resolve(arg) {
-    return isRawArg(arg) ? arg.value : get(arg)
+  function resolve(args) {
+    return args.map(arg => isRawArg(arg) ? arg.value : get(arg))
+  }
+
+  function resolveLazy(args, cb) {
+    args.reduceRight((next, arg) => resolvedArgs => {
+      return isRawArg(arg) ?
+        next([...resolvedArgs, arg.value]) :
+        lazy(arg, dependency => next([...resolvedArgs, dependency]))
+    }, cb)([])
   }
 
   function isRawArg(arg) {

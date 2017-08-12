@@ -76,6 +76,21 @@ test('Lazy waits for a dependency to be registered.', t => {
   container.add('baz', () => 'baz')
 })
 
+test('Lazy waits for it\'s sub dependencies to be registered.', t => {
+  const container = t.context.container
+
+  t.plan(1)
+
+  container.lazy('baz', baz => {
+    t.is(baz, 'baz qux quuux')
+  })
+
+  container.add('baz', (a, b) => `baz ${a} ${b}`, ['qux', 'quuux'])
+  container.add('qux', () => 'qux', ['bix'])
+  container.add('quuux', () => 'quuux')
+  container.add('bix', x => x)
+})
+
 test('Lazy only resolves once.', t => {
   const container = t.context.container
 
