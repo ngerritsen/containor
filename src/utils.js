@@ -9,7 +9,7 @@ function validateArguments(args, func, options) {
 
     return invariant(
       required ? matches : value === undefined || matches,
-      `${indices[index]} argument of ${func} should be the ${name} of type '${expected}', got '${typeof value}'.`
+      `${indices[index]} argument of ${func} should be the ${name} of type "${expected}", got "${typeof value}".`
     )
   })
 }
@@ -20,7 +20,21 @@ function invariant(condition, message) {
   }
 }
 
+function find(arr, predicate) {
+  for (let i = 0; i < arr.length; i++) {
+    if (predicate(arr[i], i)) {
+      return arr[i]
+    }
+  }
+}
+
+function includes(arr, value) {
+  return find(arr, v => v === value)
+}
+
 module.exports = {
   validateArguments,
-  invariant
+  invariant,
+  includes,
+  find
 }

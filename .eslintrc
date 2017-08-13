@@ -11,6 +11,8 @@
     }
   },
   "rules": {
-    "operator-linebreak": [2, "after"]
+    "operator-linebreak": [2, "after"],
+    "no-plusplus": 0,
+    "max-statements": [2, 10]
   }
 }

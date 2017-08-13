@@ -1,4 +1,4 @@
-const { validateArguments, invariant } = require('./utils')
+const { validateArguments, invariant, find, includes } = require('./utils')
 
 /**
  * @typedef {Object}  RawArgument
@@ -18,7 +18,9 @@ const RAW = {}
  * @return {Container}
  */
 function createContainer() { // eslint-disable-line max-statements
-  let dependencies = []
+  const dependencies = Object.create(null)
+  const providers = Object.create(null)
+
   let subscribers = []
 
   /**
@@ -29,61 +31,104 @@ function createContainer() { // eslint-disable-line max-statements
    * @param {Array.<(string|RawArgument)>} [args=[]]  Dependency arguments to inject
    */
   function add(name, func, args = []) {
-    validateRegistrationArguments(name, func, args, 'add')
-    const dependency = { name, func, args }
-    dependencies = [...dependencies, dependency]
-    subscribers.forEach(subscriber => subscriber())
+    register(name, func, args, 'add')
   }
 
   /**
    * Registers a singleton depedency at the container.
    *
-   * @param {string}    name      Dependency name
-   * @param {Function}  func      Constructor or factory function
-   * @param {Array}     [args=[]] Dependency arguments to inject
+   * @param {string}    name                          Dependency name
+   * @param {Function}  func                          Constructor or factory function
+   * @param {Array.<(string|RawArgument)>} [args=[]]  Dependency arguments to inject
    */
   function share(name, func, args = []) {
-    validateRegistrationArguments(name, func, args, 'share')
-    const dependency = { name, func, args, shared: true }
-    dependencies = [...dependencies, dependency]
-    subscribers.forEach(subscriber => subscriber())
+    register(name, func, args, 'share', true)
+  }
+
+  function register(name, func, args, method, shared = false) {
+    validateRegistrationArguments(name, func, args, method)
+    dependencies[name] = { func, args, shared }
+    subscribers.forEach(s => s.subscriber(name))
   }
 
   /**
    * Get an instantiated, injected dependency from the container.
    *
-   * @param {string}  name  Dependency name
-   * @return {*}  Resolved dependency
+   * @param {string}    name        Dependency name
+   * @param {Function}  [callback]  Resolve dependency async
+   *
+   * @return {(*|void)}  Resolved dependency or nothing in case of a callback
    */
-  function get(name) {
-    validateArguments([name], 'get', { name: ['string', true] })
-    const dependency = findDependency(name)
-    invariant(dependency, `Dependency '${name}' does not exist.`)
-    return instantiate(dependency)
+  function get(name, callback) {
+    validateArguments([name, callback], 'get', {
+      name: ['string', true],
+      callback: ['function']
+    })
+
+    const provider = providers[name]
+
+    if (!dependencies[name] && typeof provider === 'function') {
+      provider()
+    }
+
+    if (callback) {
+      return getAsync(name, callback)
+    }
+
+    invariant(dependencies[name], `Dependency "${name}" does not exist.`)
+
+    return instantiate(name, dependencies[name])
   }
 
   /**
-   * Wait for the dependency to be added to the container.
-   *
-   * @param {string}    name  Dependency name
-   * @param {Function}  cb    Callback to call when registered
+   * @param {Array.<string>}  names
+   * @param {Function}        callback
    */
-  function lazy(name, cb) {
-    const subscriber = () => {
-      const dependency = findDependency(name)
+  function provide(names, callback) {
+    validateProviderArguments(names, callback)
 
-      if (dependency) {
-        subscribers = subscribers.filter(s => s !== subscriber)
-        return instantiateLazy(dependency, cb)
+    if (find(subscribers, ({ name }) => includes(names, name))) {
+      callback()
+      return
+    }
+
+    const disposableProvider = () => {
+      names.forEach(name => {
+        providers[name] = true
+      })
+
+      callback()
+    }
+
+    names.forEach(name => {
+      providers[name] = disposableProvider
+    })
+  }
+
+  function subscribe(name, subscriber) {
+    subscribers = [...subscribers, { on: name, subscriber }]
+  }
+
+  function unsubscribe(subscriber) {
+    subscribers = subscribers.filter(s => s.subscriber !== subscriber)
+  }
+
+  function getAsync(name, cb) {
+    if (dependencies[name]) {
+      return cb(instantiate(name, dependencies[name]))
+    }
+
+    const subscriber = registeredName => {
+      if (registeredName === name) {
+        unsubscribe(subscriber)
+        instantiateAsync(name, dependencies[name], cb)
       }
     }
 
-    subscribers = [...subscribers, subscriber]
-
-    subscriber()
+    subscribe(name, subscriber)
   }
 
-  function instantiate({ name, func, instance, args, shared }) {
+  function instantiate(name, { func, instance, args, shared }) {
     if (shared) {
       return instance || createSingle(name, func, instance, args)
     }
@@ -91,30 +136,30 @@ function createContainer() { // eslint-disable-line max-statements
     return create(func, args)
   }
 
-  function instantiateLazy({ name, func, instance, args, shared }, cb) {
+  function instantiateAsync(name, { func, instance, args, shared }, cb) {
     if (shared) {
-      return cb(instance) || createSingleLazy(name, func, instance, args, cb)
+      return cb(instance) || createSingleAsync(name, func, instance, args, cb)
     }
 
-    return createLazy(func, args, cb)
+    return createAsync(func, args, cb)
   }
 
   function create(func, args) {
     return construct(func, resolve(args))
   }
 
-  function createLazy(func, args, cb) {
-    resolveLazy(args, resolvedArgs => cb(construct(func, resolvedArgs)))
+  function createAsync(func, args, cb) {
+    resolveAsync(args, resolvedArgs => cb(construct(func, resolvedArgs)))
   }
 
   function createSingle(name, func, instance, args) {
     const newInstance = create(func, args)
-    dependencies = setInstance(name, newInstance)
+    setInstance(name, newInstance)
     return newInstance
   }
 
-  function createSingleLazy(name, func, instance, args, cb) {
-    createLazy(func, args, newInstance => {
+  function createSingleAsync(name, func, instance, args, cb) {
+    createAsync(func, args, newInstance => {
       setInstance(name, newInstance)
       cb(newInstance)
     })
@@ -126,27 +171,19 @@ function createContainer() { // eslint-disable-line max-statements
       func(...args)
   }
 
-  function findDependency(name) {
-    return dependencies.find(dep => dep.name === name)
-  }
-
   function setInstance(name, instance) {
-    return dependencies.map(dep =>
-      name === dep.name ?
-        Object.assign({}, dep, { instance }) :
-        dep
-    )
+    dependencies[name].instance = instance
   }
 
   function resolve(args) {
     return args.map(arg => isRawArg(arg) ? arg.value : get(arg))
   }
 
-  function resolveLazy(args, cb) {
+  function resolveAsync(args, cb) {
     args.reduceRight((next, arg) => resolvedArgs => {
       return isRawArg(arg) ?
         next([...resolvedArgs, arg.value]) :
-        lazy(arg, dependency => next([...resolvedArgs, dependency]))
+        get(arg, dependency => next([...resolvedArgs, dependency]))
     }, cb)([])
   }
 
@@ -161,10 +198,22 @@ function createContainer() { // eslint-disable-line max-statements
       constructor: ['function', true],
       arguments: ['array']
     })
-    invariant(!findDependency(name), `Dependency '${name}' already exists.`)
+    invariant(!dependencies[name], `Dependency "${name}" already exists.`)
   }
 
-  return { add, share, get, lazy }
+  function validateProviderArguments(names, callback) {
+    validateArguments([names, callback], 'provide', {
+      names: ['array', true],
+      callback: ['function']
+    })
+
+    names.forEach(name => {
+      invariant(!dependencies[name], `Trying to provide dependency "${name}" which already exists.`)
+      invariant(!providers[name], `Trying to provide dependency "${name}" which is already provided.`)
+    })
+  }
+
+  return { add, share, get, provide }
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Simple IoC container for Javascript",
   "main": "src/container",
   "engines": {
@@ -47,11 +47,6 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-uglify": "^1.0.2",
     "sinon": "^1.17.5"
-  },
-  "ava": {
-    "require": [
-      "babel-register"
-    ]
   },
   "dependencies": {}
 }

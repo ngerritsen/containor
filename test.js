@@ -69,7 +69,7 @@ test('Lazy waits for a dependency to be registered.', t => {
 
   t.plan(1)
 
-  container.lazy('baz', baz => {
+  container.get('baz', baz => {
     t.is(baz, 'baz')
   })
 
@@ -81,7 +81,7 @@ test('Lazy waits for it\'s sub dependencies to be registered.', t => {
 
   t.plan(1)
 
-  container.lazy('baz', baz => {
+  container.get('baz', baz => {
     t.is(baz, 'baz qux quuux')
   })
 
@@ -96,7 +96,7 @@ test('Lazy only resolves once.', t => {
 
   t.plan(1)
 
-  container.lazy('baz', baz => {
+  container.get('baz', baz => {
     t.is(baz, 'baz')
   })
 
@@ -111,7 +111,7 @@ test('Lazy immediately resolves when the dependency is already there.', t => {
 
   container.add('baz', () => 'baz')
 
-  container.lazy('baz', baz => {
+  container.get('baz', baz => {
     t.is(baz, 'baz')
   })
 })
@@ -133,72 +133,111 @@ test('Share adds a singleton dependency.', t => {
   t.is(container.get('qux').inc(), 2)
 })
 
+test('Provider is ran when a dependency it provides is required.', t => {
+  const container = t.context.container
+
+  container.provide(['baz', 'qux'], () => {
+    container.add('baz', () => 'baz')
+  })
+
+  container.get('baz', baz => {
+    t.is(baz, 'baz')
+  })
+})
+
+test('Provide works sync when the dependency is provided sync.', t => {
+  const container = t.context.container
+
+  container.provide(['baz', 'qux'], () => {
+    container.add('baz', () => 'baz')
+  })
+
+  const baz = container.get('baz')
+
+  t.is(baz, 'baz')
+})
+
 test('Add throws when the dependency already exists.', t => {
   t.throws(
     () => t.context.container.add('foo', dep),
-    'Dependency \'foo\' already exists.'
+    'Dependency "foo" already exists.'
   )
 })
 
 test('Share throws when the dependency already exists.', t => {
   t.throws(
     () => t.context.container.share('foo', dep),
-    'Dependency \'foo\' already exists.'
+    'Dependency "foo" already exists.'
   )
 })
 
 test('Add throws when the name argument is invalid.', t => {
   t.throws(
     () => t.context.container.add(123),
-    'First argument of add should be the name of type \'string\', got \'number\'.'
+    'First argument of add should be the name of type "string", got "number".'
   )
 })
 
 test('Add throws when the dependency argument is invalid.', t => {
   t.throws(
     () => t.context.container.add('dep', 'dep'),
-    'Second argument of add should be the constructor of type \'function\', got \'string\'.'
+    'Second argument of add should be the constructor of type "function", got "string".'
   )
 })
 
 test('Add throws when the arguments argument is invalid.', t => {
   t.throws(
     () => t.context.container.add('dep', dep, {}),
-    'Third argument of add should be the arguments of type \'array\', got \'object\'.'
+    'Third argument of add should be the arguments of type "array", got "object".'
   )
 })
 
 test('Share throws when the name argument is invalid.', t => {
   t.throws(
     () => t.context.container.share(null),
-    'First argument of share should be the name of type \'string\', got \'object\'.'
+    'First argument of share should be the name of type "string", got "object".'
   )
 })
 
 test('Share throws when the dependency argument is invalid.', t => {
   t.throws(
     () => t.context.container.share('dep', 123),
-    'Second argument of share should be the constructor of type \'function\', got \'number\'.'
+    'Second argument of share should be the constructor of type "function", got "number".'
   )
 })
 
 test('Share throws when the arguments argument is invalid.', t => {
   t.throws(
     () => t.context.container.share('dep', dep, true),
-    'Third argument of share should be the arguments of type \'array\', got \'boolean\'.'
+    'Third argument of share should be the arguments of type "array", got "boolean".'
   )
 })
 
 test('Get throws when the name argument is invalid.', t => {
   t.throws(
     () => t.context.container.get(123),
-    'First argument of get should be the name of type \'string\', got \'number\'.'
+    'First argument of get should be the name of type "string", got "number".'
   )
 })
 
 test('Get throws when the dependency does not exist.', t => {
   t.throws(
     () => t.context.container.get('baz'),
-    'Dependency \'baz\' does not exist.'
+    'Dependency "baz" does not exist.'
+  )
+})
+
+test('Provide throws when one of the provided dependencies exist.', t => {
+  t.throws(
+    () => t.context.container.provide(['foo']),
+    'Trying to provide dependency "foo" which already exists.'
+  )
+})
+
+test('Provide throws when one of the provided dependencies is already provided.', t => {
+  t.context.container.provide(['baz'])
+  t.throws(
+    () => t.context.container.provide(['baz']),
+    'Trying to provide dependency "baz" which is already provided.'
   )
 })
