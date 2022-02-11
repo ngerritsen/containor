@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Simple IoC container for Javascript",
   "main": "src/container",
   "engines": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ngerritsen/containor.git"
+    "url": "https://gitlab.com/ngerritsen/containor.git"
   },
   "keywords": [
     "javascript",
@@ -27,9 +27,9 @@
   "author": "Niels Gerritsen",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ngerritsen/containor/issues"
+    "url": "https://gitlab.com/ngerritsen/containor/issues"
   },
-  "homepage": "https://github.com/ngerritsen/containor#readme",
+  "homepage": "https://gitlab.com/ngerritsen/containor#readme",
   "files": [
     "dist",
     "src"
@@ -38,7 +38,6 @@
     "ava": "^0.21.0",
     "buble": "^0.15.2",
     "eslint": "^3.4.0",
-    "eslint-config-ngerritsen": "^1.1.1",
     "eslint-plugin-filenames": "^1.1.0",
     "eslint-plugin-import": "^2.2.0",
     "rollup": "^0.41.6",

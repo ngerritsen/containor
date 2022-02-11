@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ngerritsen/containor.svg?branch=master)](https://travis-ci.org/ngerritsen/containor)
+[![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
 
 # Containor
 
@@ -123,7 +123,7 @@ container.get('foo', (foo) => {
 })
 ```
 
-When calling `container.provide`, you tell the container: _"As soon as you need these dependencies, I will add them to the container"_. This way you save work if you never need the dependecy at all, or later in the application's life cycle. 
+When calling `container.provide`, you tell the container: _"As soon as you need these dependencies, I will add them to the container"_. This way you save work if you never need the dependecy at all, or later in the application's life cycle.
 
 _Note that when calling `container.get` __without__ a callback, it will fail if the provider is providing the dependencies async, as the dependencies will not be immediately available._
 

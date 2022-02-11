@@ -1,0 +1,12 @@
+default:
+  image: node:lts
+  before_script:
+    - npm install
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - npm test
