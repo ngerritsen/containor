@@ -1,29 +1,49 @@
-const buble = require('rollup-plugin-buble')
-const nodeResolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
-const uglify = require('rollup-plugin-uglify')
+import { terser } from "rollup-plugin-terser";
+import typescript from "rollup-plugin-typescript2";
 
-const config = {
-  entry: 'src/container.js',
-  plugins: [
-    buble(),
-    nodeResolve(),
-    commonjs()
-  ],
-  targets: [
-    {
-      dest: 'dist/containor.js',
-      format: 'iife',
-      moduleName: 'Containor',
-      sourceMap: true
-    }
-  ]
-}
+const tsNoDeclaration = {
+  compilerOptions: {
+    declaration: false,
+  },
+};
 
-if (process.env.NODE_ENV === 'production') {
-  config.plugins.push(uglify())
-  config.targets[0].sourceMap = false
-  config.targets[0].dest = 'dist/containor.min.js'
-}
-
-module.exports = config
+export default [
+  {
+    input: "src/container.ts",
+    output: {
+      file: "lib/index.js",
+      exports: "named",
+      format: "cjs",
+    },
+    plugins: [typescript({ useTsconfigDeclarationDir: true })],
+  },
+  {
+    input: "src/container.ts",
+    output: {
+      file: "dist/containor.min.js",
+      format: "iife",
+      exports: "named",
+      name: "Containor",
+    },
+    plugins: [
+      typescript({
+        tsconfigOverride: tsNoDeclaration,
+      }),
+      terser(),
+    ],
+  },
+  {
+    input: "src/container.ts",
+    output: {
+      file: "dist/containor.js",
+      format: "iife",
+      exports: "named",
+      name: "Containor",
+    },
+    plugins: [
+      typescript({
+        tsconfigOverride: tsNoDeclaration,
+      }),
+    ],
+  },
+];

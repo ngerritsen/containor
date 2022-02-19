@@ -1,0 +1,11 @@
+{
+  "include": ["src/*.ts"],
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "esnext",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "types"
+  }
+}

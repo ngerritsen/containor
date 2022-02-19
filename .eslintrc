@@ -1,18 +1,16 @@
 {
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "env": {
     "node": true
   },
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": 2016,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
-  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "operator-linebreak": [2, "after"],
     "no-plusplus": 0,
-    "max-statements": [2, 10]
+    "no-prototype-builtins": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/ban-types": 0,
+    "@typescript-eslint/explicit-function-return-type": 2,
+    "@typescript-eslint/no-empty-function": 0
   }
 }
