@@ -9,7 +9,7 @@ const tsNoDeclaration = {
 
 export default [
   {
-    input: "src/container.ts",
+    input: "src/index.ts",
     output: {
       file: "lib/index.js",
       exports: "named",
@@ -18,7 +18,7 @@ export default [
     plugins: [typescript({ useTsconfigDeclarationDir: true })],
   },
   {
-    input: "src/container.ts",
+    input: "src/index.ts",
     output: {
       file: "dist/containor.min.js",
       format: "iife",
@@ -33,7 +33,7 @@ export default [
     ],
   },
   {
-    input: "src/container.ts",
+    input: "src/index.ts",
     output: {
       file: "dist/containor.js",
       format: "iife",

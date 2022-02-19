@@ -1,7 +1,7 @@
 {
   "name": "containor",
-  "version": "4.1.1",
-  "description": "Simple IoC container for Javascript",
+  "version": "4.1.2",
+  "description": "Simple IoC container for Javascript with Typescript support",
   "main": "lib/index.js",
   "engines": {
     "node": ">=12.0"
