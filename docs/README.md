@@ -12,6 +12,6 @@ Simple IOC/DI container for Javascript with Typescript support.
 
 _Containor weighs just ~3.6kb minified!\*_
 
-- [Getting started]('/getting-started.md')
-- [Features]('/features.md')
-- [API Reference]('/api-reference.md')
+- [Getting started](/getting-started)
+- [Guide](/guide)
+- [API Reference](/api-reference)

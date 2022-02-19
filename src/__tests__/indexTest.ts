@@ -77,41 +77,41 @@ describe("Resolving dependencies", () => {
 });
 
 describe("Async dependency", () => {
-  test("Async get waits for a dependency to be registered.", (done) => {
-    container.get(tokens.foo, (foo: string) => {
+  test("Async get waits for a dependency to be registered.", () => {
+    const promise = container.getAsync(tokens.foo).then((foo: string) => {
       expect(foo).toBe("foo");
-      done();
     });
 
     container.add(tokens.foo, () => "foo");
+
+    return promise;
   });
 
-  test("Async get works with registered sub dependencies.", (done) => {
+  test("Async get works with registered sub dependencies.", () => {
     container.add(tokens.foo, (str: string) => "foo" + str, [tokens.bar]);
     container.add(tokens.bar, (str: string) => "bar" + str, [tokens.qux]);
     container.add(tokens.qux, () => "qux");
 
-    container.get(tokens.foo, (foo: string) => {
+    return container.getAsync(tokens.foo).then((foo: string) => {
       expect(foo).toBe("foobarqux");
-      done();
     });
   });
 
-  test("Async get waits for all sub dependencies.", (done) => {
-    container.get(tokens.foo, (foo: string) => {
+  test("Async get waits for all sub dependencies.", () => {
+    const promise = container.getAsync(tokens.foo).then((foo: string) => {
       expect(foo).toBe("foobarqux");
-      done();
     });
 
     container.add(tokens.foo, (str: string) => "foo" + str, [tokens.bar]);
     container.add(tokens.bar, (str: string) => "bar" + str, [tokens.qux]);
     container.add(tokens.qux, () => "qux");
+
+    return promise;
   });
 
-  test("Async get waits for all sub dependencies delayed in different orders.", (done) => {
-    container.get(tokens.foo, (foo: string) => {
+  test("Async get waits for all sub dependencies delayed in different orders.", () => {
+    const promise = container.getAsync(tokens.foo).then((foo: string) => {
       expect(foo).toBe("foobarqux");
-      done();
     });
 
     setTimeout(
@@ -125,47 +125,20 @@ describe("Async dependency", () => {
       3
     );
     setTimeout(() => container.add(tokens.qux, () => "qux"), 6);
-  });
 
-  test("Async get get only resolves once.", (done) => {
-    container.get(tokens.foo, (str: string) => {
-      expect(str).toBe("foo");
-      done();
-    });
-
-    container.add(tokens.foo, () => "foo");
-    container.add(tokens.bar, () => "bar");
-  });
-
-  test("Async immediately resolves when the dependency is already there.", () => {
-    const callback = jest.fn();
-
-    container.add(tokens.foo, () => "foo");
-    container.get(tokens.foo, callback);
-
-    expect(callback).toHaveBeenCalled();
+    return promise;
   });
 });
 
 describe("Providers", () => {
   test("Provider is ran when a dependency it provides is required.", () => {
-    container.provide([tokens.foo, tokens.bar], () => {
+    container.provide([tokens.foo, tokens.bar]).then(() => {
       container.add(tokens.foo, () => "foo");
     });
 
-    container.get(tokens.foo, (str: string) => {
+    return container.getAsync(tokens.foo).then((str: string) => {
       expect(str).toBe("foo");
     });
-  });
-
-  test("Provide works sync when the dependency is provided sync.", () => {
-    container.provide([tokens.foo, tokens.bar], () => {
-      container.add(tokens.foo, () => "foo");
-    });
-
-    const foo = container.get(tokens.foo);
-
-    expect(foo).toBe("foo");
   });
 });
 
@@ -220,15 +193,15 @@ describe("Runtime errors", () => {
   test("Provide throws when one of the provided dependencies exist.", () => {
     container.add(tokens.foo, () => "");
 
-    expect(() => container.provide([tokens.foo], () => {})).toThrowError(
+    expect(() => container.provide([tokens.foo])).toThrowError(
       'Trying to provide dependency "foo" which already exists.'
     );
   });
 
   test("Provide throws when one of the provided dependencies is already provided.", () => {
-    container.provide([tokens.foo], () => {});
+    container.provide([tokens.foo]);
 
-    expect(() => container.provide([tokens.foo], () => {})).toThrowError(
+    expect(() => container.provide([tokens.foo])).toThrowError(
       'Trying to provide dependency "foo" which is already provided.'
     );
   });
@@ -238,6 +211,7 @@ describe("Invalid argument errors", () => {
   type UntypedContainer = {
     add: Function;
     get: Function;
+    getAsync: Function;
     share: Function;
     provide: Function;
   };
@@ -287,6 +261,12 @@ describe("Invalid argument errors", () => {
   test("Get throws when the token argument is invalid.", () => {
     expect(() => container.get(123)).toThrowError(
       'First argument of "get" should be of type: "Token", received: "number".'
+    );
+  });
+
+  test("GetAsync throws when the token argument is invalid.", () => {
+    expect(() => container.getAsync(123)).toThrowError(
+      'First argument of "getAsync" should be of type: "Token", received: "number".'
     );
   });
 

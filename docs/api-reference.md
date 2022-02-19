@@ -20,18 +20,24 @@ Add a constant value to the container. Value has to be of type `T`.
 
 ##### `.get<T>(token: Token): T`
 
-##### `.get<T>(token: Token, callback: (T) => void): void`
+Get a dependency from the container.
 
-Get a dependency from the container, when a callback is provided, will wait for all dependencies to be available.
+##### `.getAsync<T>(token: Token): Promise<T>`
 
-##### `.provide(tokens: Token[], callback: () => void): void`
+Get a dependency from the container asynchronously.
 
-Register as a provider of dependencies, will get notified via the callback when a dependency is requested.
+##### `.provide(tokens: Token[]): Promise<void>`
+
+Register as a provider of dependencies, resolves when one of the dependencies is requested.
 
 ## Token
 
 ##### `token<T>(name: string) => Token<T>`
 
+Create a new token, name has to be unique.
+
 ## Raw argument
 
 ##### `raw<T>(value: string) => RawArgument<T>`
+
+Create a new raw argument.

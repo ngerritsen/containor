@@ -30,11 +30,10 @@ export type Provider = {
 
 export type GetCallback<T> = (instance: T) => void;
 
-export type ProviderCallback = () => void;
-
 export type Container = {
   add: <T>(token: Token<T>, creator: Creator<T>, args?: Token[]) => void;
   share: <T>(token: Token<T>, creator: Creator<T>, args?: Token[]) => void;
-  provide: (token: Token<unknown>[], callback: ProviderCallback) => void;
-  get: <T>(token: Token<T>, callback?: GetCallback<T>) => T | void;
+  provide: (token: Token<unknown>[]) => Promise<void>;
+  get: <T>(token: Token<T>) => T;
+  getAsync: <T>(token: Token<T>) => Promise<T>;
 };

@@ -4,7 +4,6 @@ import {
   Func,
   Dependency,
   Creator,
-  ProviderCallback,
   GetCallback,
   Constructor,
 } from "./types";
@@ -62,30 +61,36 @@ class Container {
     this.requests.fulfill(token);
   }
 
-  public get<T>(token: Token<T>): T;
-  public get<T>(token: Token<T>, callback: GetCallback<T>): void;
-  public get<T>(token: Token<T>, callback?: GetCallback<T>): T | void {
-    validateArguments("get", [
-      [token, Token, true],
-      [callback, "function"],
-    ]);
+  public get<T>(token: Token<T>): T {
+    validateArguments("get", [[token, Token, true]]);
 
     if (this.providers.has(token)) {
       this.providers.notify(token);
     }
 
-    if (typeof callback === "function") {
-      return this.getAsync<T>(token, callback);
-    }
-
     return this.instantiate(this.dependencies.get<T>(token));
   }
 
-  public provide(tokens: Token[], callback: ProviderCallback): void {
-    validateArguments("provide", [
-      [tokens, "array", true],
-      [callback, "function"],
-    ]);
+  public getAsync<T>(token: Token<T>): Promise<T> {
+    validateArguments("getAsync", [[token, Token, true]]);
+
+    if (this.providers.has(token)) {
+      this.providers.notify(token);
+    }
+
+    if (this.dependencies.has(token)) {
+      return Promise.resolve(this.instantiate(this.dependencies.get<T>(token)));
+    }
+
+    return new Promise((resolve) => {
+      this.requests.add(token, () => {
+        this.instantiateAsync<T>(this.dependencies.get<T>(token), resolve);
+      });
+    });
+  }
+
+  public provide(tokens: Token[]): Promise<void> {
+    validateArguments("provide", [[tokens, "array", true]]);
 
     const existing = tokens.find((token) => this.dependencies.has(token));
 
@@ -97,22 +102,19 @@ class Container {
     );
 
     if (tokens.some((token) => this.requests.has(token))) {
-      this.providers.add(tokens, callback, true);
-      callback();
-      return;
+      this.providers.add(tokens, () => {}, true);
+      return Promise.resolve();
     }
 
-    this.providers.add(tokens, callback);
-  }
+    let resolver: () => void;
 
-  private getAsync<T>(token: Token<T>, callback: GetCallback<T>): void {
-    if (this.dependencies.has(token)) {
-      return callback(this.instantiate(this.dependencies.get<T>(token)));
-    }
-
-    this.requests.add(token, () => {
-      this.instantiateAsync<T>(this.dependencies.get<T>(token), callback);
+    const promise = new Promise<void>((resolve) => {
+      resolver = resolve;
     });
+
+    this.providers.add(tokens, resolver);
+
+    return promise;
   }
 
   private instantiate<T>(dependency: Dependency<T>): any {
@@ -179,7 +181,9 @@ class Container {
       (next, arg) => (resolvedArgs: unknown[]) => {
         return arg instanceof RawArgument
           ? next([...resolvedArgs, arg.value])
-          : this.get(arg, (dependency) => next([...resolvedArgs, dependency]));
+          : this.getAsync(arg).then((dependency) =>
+              next([...resolvedArgs, dependency])
+            );
       },
       callback
     )([]);

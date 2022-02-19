@@ -16,7 +16,7 @@ _Containor weighs just ~3.6kb minified!\*_
 ## [📖 Documentation](https://ngerritsen.gitlab.io/containor)
 
 - [Getting Started](https://ngerritsen.gitlab.io/containor/#/getting-started)
-- [Guide](https://ngerritsen.gitlab.io/containor/#/guid)
+- [Guide](https://ngerritsen.gitlab.io/containor/#/guide)
 - [API Reference](https://ngerritsen.gitlab.io/containor/#/api-reference)
 
 ## Getting started

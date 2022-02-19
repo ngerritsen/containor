@@ -54,7 +54,7 @@ container.constant(tokens.environment, "development");
 
 ## Async dependencies
 
-By adding a callback to `get`, it waits for the dependency (and all of it's sub-dependencies, this can be nested) to be registered, then runs the callback. If the dependency is already there, it will resolve immediately.
+By calling `getAsync`, it waits for the dependency (and all of it's sub-dependencies, this can be nested) to be registered, then resolves. If the dependency is already there, it will resolve immediately.
 
 ```ts
 class Foo {}
@@ -63,7 +63,7 @@ const tokens = {
   foo: token<Foo>("foo"),
 };
 
-container.get(tokens.foo, (foo: Foo) => {
+container.getAsync(tokens.foo).then((foo: Foo) => {
   // Runs as soon as foo is added to the container.
 });
 
@@ -129,17 +129,17 @@ const tokens = {
   baz: token<Baz>("baz"),
 };
 
-container.provide([tokens.foo], () => {
+container.provide([tokens.foo]).then(() => {
   /* ... Load dependencies async somehow */ (foo) => {
     container.add(tokens.foo, foo);
   };
 });
 
-container.get(tokens.foo, (foo: Foo) => {
+container.getAsync(tokens.foo).then((foo: Foo) => {
   // Foo will be instantiated async as soon as it is provided
 });
 ```
 
 When calling `container.provide`, you tell the container: _"As soon as you need these dependencies, I will add them to the container"_. This way you save work if you never need the dependecy at all, or later in the application's life cycle.
 
-> Note that when calling `container.get` **without** a callback, it will fail if the provider is providing the dependencies async, as the dependencies will not be immediately available.
+> ⚠️ Be careful with using a synchronous `container.get` in combination with `container.provide`. Only do this when you are sure the dependency has already been provided. `container.provide` works best when used in tandem with `container.getAsync`.
