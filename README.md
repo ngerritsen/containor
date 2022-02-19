@@ -10,7 +10,7 @@ Simple IOC/DI container for Javascript with Typescript support.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
-_Containor weighs just ~3kb minified!\*_
+_Containor weighs just ~3.6kb minified!\*_
 
 ## Guide
 
