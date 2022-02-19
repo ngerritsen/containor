@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Simple IoC container for Javascript with Typescript support",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
@@ -12,7 +12,7 @@
     "test": "npm run lint; jest",
     "lint": "eslint .; prettier . --check",
     "fix": "eslint . --fix; prettier . --write",
-    "prepare": "npm run test; npm run build"
+    "prepublishOnly": "npm run test; npm run build"
   },
   "repository": {
     "type": "git",
