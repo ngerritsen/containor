@@ -41,6 +41,10 @@ class Container {
     this.register<T>(token, creator, args, "share", true);
   }
 
+  public constant<T>(token: Token<T>, value: T): void {
+    this.register<T>(token, () => value, [], "constant", true);
+  }
+
   private register<T>(
     token: Token<T>,
     creator: Creator<T>,

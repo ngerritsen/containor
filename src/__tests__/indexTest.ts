@@ -186,6 +186,14 @@ describe("Singletons", () => {
   });
 });
 
+describe("Constants", () => {
+  test("Constant adds a constant", () => {
+    container.constant(tokens.foo, "foo");
+
+    expect(container.get(tokens.foo)).toBe("foo");
+  });
+});
+
 describe("Runtime errors", () => {
   test("Add throws when the dependency already exists.", () => {
     container.add(tokens.foo, () => "");

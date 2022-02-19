@@ -1,6 +1,6 @@
 [![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
 
-# 📦Containor
+# 📦 Containor
 
 Simple IOC/DI container for Javascript with Typescript support.
 
@@ -55,7 +55,7 @@ const bar = container.get(tokens.bar); // An instance of bar with an instance of
 
 Dependencies are registered using tokens, these can be typed to provide proper typehinting. Tokens have a name which needs to be unique when registered at the container.
 
-```
+```ts
 const tokens = {
   token<Foo>("foo"),
   token<string>("bar"),
@@ -85,6 +85,22 @@ container.share(tokens.counter, counter);
 
 container.get(tokens.counter).increment(); // returns '1'
 container.get(tokens.counter).increment(); // returns '2' because it's the same instance 👍
+```
+
+### Constants
+
+The container can also register constants, this is idea for third party libraries or configurations.
+
+```ts
+import _ from "lodash";
+
+const tokens = {
+  lodash: token<Lodash>("lodash"),
+  environment: token<string>("environment")
+};
+
+container.constant(tokens.lodash, _);
+container.constant(tokens.environment, "development");
 ```
 
 ### Async dependencies
@@ -201,6 +217,10 @@ Add a dependency to the container. Optionally define it's dependencies. Creator 
 ### `.share<T>(token: Token<T>, creator: Creator<T>, [arguments: (Token | RawArgument)[]]): void`
 
 Add a singleton dependency to the container. Optionally define it's dependencies. Creator can be a constructor of type `T` or a function with return type `Y`.
+
+### `.constant<T>(token: Token<T>, value: T): void`
+
+Add a constant value to the container. Value has to be of type `T`.
 
 ### `.get<T>(token: Token): T`
 
