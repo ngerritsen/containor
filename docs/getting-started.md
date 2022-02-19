@@ -31,8 +31,8 @@ class Bar {}
 
 const tokens = {
   foo: token<Foo>("foo"),
-  bar: token<Bar>("bar")
-}
+  bar: token<Bar>("bar"),
+};
 
 const container = createContainer();
 

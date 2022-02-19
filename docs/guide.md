@@ -45,7 +45,7 @@ import _ from "lodash";
 
 const tokens = {
   lodash: token<Lodash>("lodash"),
-  environment: token<string>("environment")
+  environment: token<string>("environment"),
 };
 
 container.constant(tokens.lodash, _);

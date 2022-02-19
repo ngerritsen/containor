@@ -1,4 +1,3 @@
-
 [![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
 
 # 📦 Containor
@@ -20,7 +19,6 @@ _Containor weighs just ~3.6kb minified!\*_
 - [API Reference](https://ngerritsen.gitlab.io/containor/#/api-reference)
 
 ## Getting started
-
 
 ### Installation
 
@@ -53,8 +51,8 @@ class Bar {}
 
 const tokens = {
   foo: token<Foo>("foo"),
-  bar: token<Bar>("bar")
-}
+  bar: token<Bar>("bar"),
+};
 
 const container = createContainer();
 
