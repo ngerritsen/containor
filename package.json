@@ -3,6 +3,7 @@
   "version": "5.0.0",
   "description": "Simple IoC container for Javascript with Typescript support",
   "main": "lib/index.js",
+  "types": "types/index.d.ts",
   "engines": {
     "node": ">=12.0"
   },
