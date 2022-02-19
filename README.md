@@ -63,31 +63,3 @@ container.add(tokens.bar, Bar);
 
 const foo = container.get(tokens.foo); // An instance of Foo with Bar injected.
 ```
-
-### Including as script tag
-
-Containor can be included via a script tag and accessed via the `Containor` global variable:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/containor/dist/containor.min.js"></script>
-
-<script>
-  const container = Containor.createContainer();
-  const rawArgument = Containor.raw(123);
-  const token = Containor.token("myToken");
-</script>
-```
-
-An unminified version is available for development:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/containor/dist/containor.js"></script>
-```
-
-You can also get a specific version:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/containor@4.1.1/dist/containor.min.js"></script>
-```
-
-This method can be very useful for quick prototypes or codepens.
