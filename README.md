@@ -1,7 +1,7 @@
 
 [![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
 
-# Containor
+# 📦 Containor
 
 Simple IOC/DI container for Javascript with Typescript support.
 
@@ -13,7 +13,14 @@ Simple IOC/DI container for Javascript with Typescript support.
 
 _Containor weighs just ~3.6kb minified!\*_
 
+## [📖 Documentation](https://ngerritsen.gitlab.io/containor)
+
+- [Getting Started](https://ngerritsen.gitlab.io/containor/#/getting-started)
+- [Guide](https://ngerritsen.gitlab.io/containor/#/guid)
+- [API Reference](https://ngerritsen.gitlab.io/containor/#/api-reference)
+
 ## Getting started
+
 
 ### Installation
 
