@@ -160,4 +160,4 @@ container.getAsync(tokens.foo).then((foo: Foo) => {
 
 When calling `container.provide`, you tell the container: _"As soon as you need these dependencies, I will add them to the container"_. This way you save work if you never need the dependecy at all, or later in the application's life cycle.
 
-> ⚠️ Be careful with using a synchronous `container.get` in combination with `container.provide`. Only do this when you are sure the dependency has already been provided. `container.provide` works best when used in tandem with `container.getAsync`.
+!> Be careful with using a synchronous `container.get` in combination with `container.provide`. Only do this when you are sure the dependency has already been provided. `container.provide` works best when used in tandem with `container.getAsync`.

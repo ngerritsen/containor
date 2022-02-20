@@ -16,6 +16,8 @@ yarn add containor
 
 ## Basic usage
 
+Create a token for each dependency, register the dependencies with the appropriate token and arguments, that's it!
+
 ```ts
 import { createContainer, token } from "containor";
 

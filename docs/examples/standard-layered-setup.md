@@ -15,9 +15,9 @@ Typical controller, service, repository setup. This example should give an idea 
   tokens.ts
 ```
 
-These are the fake classes we are working with:
-
 > This controller, service, repository setup is just an easy example, use whatever application architecture you'd like.
+
+These are the fake classes we are working with:
 
 ```ts
 // todos/TodoController.ts
