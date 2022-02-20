@@ -4,16 +4,23 @@ import { invariant } from "./utils";
 
 class Dependencies {
   private dependencies = new Map<string, Dependency>();
+  private reservations = new Set<string>();
 
   public add<T>(
     token: Token,
     creator: Creator<T>,
     args: Argument[] = [],
-    shared = false
+    shared = false,
+    reserved = false
   ): void {
     invariant(
       !this.dependencies.get(token.name),
       `Dependency "${token.name}" already exists.`
+    );
+
+    invariant(
+      reserved || !this.reservations.has(token.name),
+      `Dependency "${token.name}" has already been reserved.`
     );
 
     invariant(
@@ -22,6 +29,10 @@ class Dependencies {
     );
 
     this.dependencies.set(token.name, { token, creator, args, shared });
+
+    if (reserved) {
+      this.cancelReservation(token);
+    }
   }
 
   public get<T>(token: Token): Dependency<T> {
@@ -32,6 +43,23 @@ class Dependencies {
 
   public has(token: Token): boolean {
     return this.dependencies.has(token.name);
+  }
+
+  public reserve(token: Token): void {
+    invariant(
+      !this.reservations.has(token.name),
+      `Dependency "${token.name}" is already reserved.`
+    );
+
+    this.reservations.add(token.name);
+  }
+
+  public cancelReservation(token: Token): void {
+    this.reservations.delete(token.name);
+  }
+
+  public isReserved(token: Token): boolean {
+    return this.reservations.has(token.name);
   }
 }
 

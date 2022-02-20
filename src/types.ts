@@ -1,5 +1,6 @@
 import { RawArgument } from "./raw";
 import { Token } from "./token";
+import { Container } from "./container";
 
 export type Argument<T = unknown> = Token<T> | RawArgument<T>;
 
@@ -22,6 +23,8 @@ export type Dependency<T = unknown> = {
   instance?: any;
 };
 
+export type ProviderCallback = (container: Container) => void;
+
 export type Provider = {
   tokens: Token[];
   called?: boolean;
@@ -30,10 +33,7 @@ export type Provider = {
 
 export type GetCallback<T> = (instance: T) => void;
 
-export type Container = {
-  add: <T>(token: Token<T>, creator: Creator<T>, args?: Token[]) => void;
-  share: <T>(token: Token<T>, creator: Creator<T>, args?: Token[]) => void;
-  provide: (token: Token<unknown>[]) => Promise<void>;
-  get: <T>(token: Token<T>) => T;
-  getAsync: <T>(token: Token<T>) => Promise<T>;
-};
+export interface Module {
+  provides: Token[];
+  register: ProviderCallback;
+}

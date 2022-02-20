@@ -1,3 +1,7 @@
+# Getting started
+
+Setting up Containor should be quick and easy.
+
 ## Installation
 
 Containor can be installed by using any package manager using the npm repository.

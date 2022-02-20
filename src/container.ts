@@ -6,6 +6,8 @@ import {
   Creator,
   GetCallback,
   Constructor,
+  ProviderCallback,
+  Module,
 } from "./types";
 import { RawArgument } from "./raw";
 import { Token } from "./token";
@@ -32,6 +34,14 @@ class Container {
     this.register<T>(token, creator, args, "add");
   }
 
+  public addAsync<T>(
+    token: Token<T>,
+    asyncCreator: Promise<Creator<T>>,
+    args: Argument[] = []
+  ): Promise<void> {
+    return this.registerAsync<T>(token, asyncCreator, args, "add", true);
+  }
+
   public share<T>(
     token: Token<T>,
     creator: Creator<T>,
@@ -40,8 +50,48 @@ class Container {
     this.register<T>(token, creator, args, "share", true);
   }
 
+  public shareAsync<T>(
+    token: Token<T>,
+    asyncCreator: Promise<Creator<T>>,
+    args: Argument[] = []
+  ): Promise<void> {
+    return this.registerAsync<T>(token, asyncCreator, args, "share", true);
+  }
+
   public constant<T>(token: Token<T>, value: T): void {
     this.register<T>(token, () => value, [], "constant", true);
+  }
+
+  public constantAsync<T>(
+    token: Token<T>,
+    asyncValue: Promise<T>
+  ): Promise<void> {
+    return this.registerAsync<T>(
+      token,
+      asyncValue.then((value: T) => () => value),
+      [],
+      "constant",
+      true
+    );
+  }
+
+  private registerAsync<T>(
+    token: Token<T>,
+    asyncCreator: Promise<Creator<T>>,
+    args: Argument[],
+    method: string,
+    shared = false
+  ): Promise<void> {
+    this.dependencies.reserve(token);
+
+    return asyncCreator
+      .then((creator: Creator<T>) => {
+        this.register<T>(token, creator, args, method, shared, true);
+      })
+      .catch((error) => {
+        this.dependencies.cancelReservation(token);
+        throw error;
+      });
   }
 
   private register<T>(
@@ -49,7 +99,8 @@ class Container {
     creator: Creator<T>,
     args: Argument[],
     method: string,
-    shared = false
+    shared = false,
+    reserved = false
   ): void {
     validateArguments(method, [
       [token, Token, true],
@@ -57,7 +108,7 @@ class Container {
       [args, "array"],
     ]);
 
-    this.dependencies.add<T>(token, creator, args, shared);
+    this.dependencies.add<T>(token, creator, args, shared, reserved);
     this.requests.fulfill(token);
   }
 
@@ -89,32 +140,53 @@ class Container {
     });
   }
 
-  public provide(tokens: Token[]): Promise<void> {
+  public provide(tokens: Token[], provider: ProviderCallback): void {
     validateArguments("provide", [[tokens, "array", true]]);
 
-    const existing = tokens.find((token) => this.dependencies.has(token));
+    const existing = tokens.find(
+      (token) =>
+        this.dependencies.has(token) || this.dependencies.isReserved(token)
+    );
 
     invariant(
       !existing,
-      `Trying to provide dependency "${
-        existing && existing.name
-      }" which already exists.`
+      `Trying to provide dependency "${existing && existing.name}" which ${
+        existing && this.dependencies.isReserved(existing)
+          ? "is already reserved"
+          : "already exists"
+      }.`
     );
 
     if (tokens.some((token) => this.requests.has(token))) {
       this.providers.add(tokens, () => {}, true);
-      return Promise.resolve();
+      provider(this);
     }
 
-    let resolver: () => void;
+    this.providers.add(tokens, () => provider(this));
+  }
 
-    const promise = new Promise<void>((resolve) => {
-      resolver = resolve;
+  public provideAsync(
+    tokens: Token[],
+    asyncProvider: Promise<ProviderCallback>
+  ): void {
+    asyncProvider.then((provider) => {
+      this.provide(tokens, provider);
     });
+  }
 
-    this.providers.add(tokens, resolver);
+  public use(module: Creator<Module>): void {
+    const moduleInstance = this.construct(module, []);
 
-    return promise;
+    this.provide(
+      moduleInstance.provides,
+      moduleInstance.register.bind(moduleInstance)
+    );
+  }
+
+  public useAsync(asyncModule: Promise<Creator<Module>>): void {
+    asyncModule.then((module: Creator<Module>) => {
+      this.use(module);
+    });
   }
 
   private instantiate<T>(dependency: Dependency<T>): any {

@@ -92,6 +92,18 @@ setTimeout(() => {
 
 _Getting dependencies async is especially handy for client side code, where scripts can load asynchronously._
 
+For registering asynchronous dependencies, each registration method has an async variant. These take a promise that resolves to the creator:
+
+```ts
+container.addAsync(tokens.foo, import("./Foo.ts"), [tokens.bar]);
+
+container.shareAsync(tokens.counter, import("./Counter.ts"));
+
+container.constantAsync(tokens.name, fetchName());
+```
+
+Especially with the asynchronous import syntax this can be convenient.
+
 ## Raw arguments
 
 When you simply want to pass a raw value to a dependency without registering it as a constant, you can do this using a `raw` dependency:
@@ -144,20 +156,115 @@ Providers allow for lazily adding dependecies to the container. They can especia
 ```ts
 const tokens = {
   foo: token<Foo>("foo"),
-  baz: token<Baz>("baz"),
+  bar: token<Bar>("bar"),
 };
 
-container.provide([tokens.foo]).then(() => {
-  /* ... Load dependencies async somehow */ (foo) => {
-    container.add(tokens.foo, foo);
-  };
+container.provide([tokens.foo], (c: Container) => {
+  c.add(tokens.foo, Foo, [tokens.bar]);
+  c.add(tokens.bar, Bar);
 });
 
-container.getAsync(tokens.foo).then((foo: Foo) => {
-  // Foo will be instantiated async as soon as it is provided
+const foo = container.get(tokens.foo);
+```
+
+When calling `container.provide`, you tell the container: _"As soon as you need these dependencies, I will add them to the container"_. This way you save work if you never need the dependecy at all, or later in the application's life cycle. This also means that dependencies being added that are not listed will **not** trigger the provider:
+
+```ts
+container.provide([tokens.foo], (c: Container) => {
+  c.add(tokens.foo, Foo, [tokens.bar]);
+  c.add(tokens.bar, Bar);
+});
+
+const bar = container.get(tokens.bar); // This will not work, bar is an internal dependency and not exposed as being provided.
+```
+
+!> Be careful with using `container.get` in combination with `container.provide`. Only do this when you are sure the dependency has already been provided.
+
+In the previous example everything was synchronous, what if the dependencies in our provider are asynchronous. This is perfectly possible, it works exactly the same as when adding dependencies asynchronously without a provider. Just make sure to use retieve the dependencies asynchronous aswell:
+
+```ts
+container.provide([tokens.foo], (c: Container) => {
+  c.addAsync(tokens.foo, import("./foo.ts"));
+});
+
+const foo = await container.getAsync(tokens.foo);
+```
+
+```ts
+container.provide([tokens.foo], import("./provider.ts"));
+
+const foo = await container.getAsync(tokens.foo);
+```
+
+This can be helpful if the provider still needs to be downloaded or do some asynchronous work beforehand.
+
+## Modules
+
+Modules provide the same functionality as providers, but in a more modular way:
+
+```ts
+// tokens.ts
+import { token } from "./containor";
+
+export default {
+  foo: token<Foo>("foo"),
+  bar: token<Bar>("bar"),
+};
+```
+
+```ts
+// myModule/module.ts
+import { createModule } from "./containor";
+import tokens from "../tokens.ts";
+
+const myModule = createModule([tokens.foo], (c: Container) => {
+  c.add(tokens.foo, Foo, [tokens.bar]);
+  c.add(tokens.bar, Bar);
 });
 ```
 
-When calling `container.provide`, you tell the container: _"As soon as you need these dependencies, I will add them to the container"_. This way you save work if you never need the dependecy at all, or later in the application's life cycle.
+```ts
+// index.ts
+import { createContainer } from "./containor";
 
-!> Be careful with using a synchronous `container.get` in combination with `container.provide`. Only do this when you are sure the dependency has already been provided. `container.provide` works best when used in tandem with `container.getAsync`.
+const container = createContainer();
+
+container.use(myModule);
+
+const foo = container.get(tokens.foo);
+```
+
+This is a perfect way of splitting up your project. Asynchronous modules work very similar to asynchronous providers.
+
+```ts
+// index.ts
+container.useAsync(import("./myModule/module.ts"));
+
+const foo = await container.getAsync(tokens.foo);
+```
+
+From here on the same rules apply as providers. Containor also provides a `Module` inteface for an object oriented style:
+
+```ts
+// MyModule.ts
+import { Module } from "containor";
+import tokens from "./tokens";
+
+export default class MyModule implements Module {
+  public provides = [tokens.foo];
+
+  public register(container: Container) {
+    container.add(tokens.foo, Foo, [tokens.bar]);
+    ccontainer.add(tokens.bar, Bar);
+  }
+}
+```
+
+```ts
+// index.ts
+import MyModule from "./MyModule.ts";
+
+container.use(MyModule);
+
+const foo = await container.getAsync(tokens.foo);
+```

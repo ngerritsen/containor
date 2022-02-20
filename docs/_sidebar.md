@@ -1,7 +1,8 @@
 - [Getting started](/getting-started)
+- [Motivation](/motivation)
 - [Guide](/guide)
 - [API Reference](/api-reference)
-- **Examples**
-  - [Standard layered setup](/examples/standard-layered-setup.md)
-  - [Using interfaces](/examples/using-interfaces.md)
-  - [Same class with different arguments](/examples/same-class-with-different-arguments.md)
+- [Examples](/examples/)
+  - [Standard layered setup](/examples/standard-layered-setup)
+  - [Using interfaces](/examples/using-interfaces)
+  - [Same class with different arguments](/examples/same-class-with-different-arguments)

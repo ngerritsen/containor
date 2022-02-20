@@ -7,6 +7,7 @@ Typical controller, service, repository setup. This example should give an idea 
   config.ts
 /src
   /todos
+    module.ts
     TodoController.ts
     TodoService.ts
     TodoRepository.ts
@@ -61,6 +62,24 @@ export default {
 };
 ```
 
+```ts
+// todos/module.ts
+import { createModule } from "containor";
+import { Connection } from "database";
+import tokens from "../tokens";
+import TodoController from "./TodoController";
+import TodoService from "./TodoService";
+import TodoRepository from "./TodoRepository";
+
+export default createModule([tokens.todoController], (c) => {
+  c.add(tokens.todoController, TodoController, [tokens.todoService]);
+  c.add(tokens.todoService, TodoService, [tokens.todoRepository]);
+  c.add(tokens.todoRepository, TodoRepository, [tokens.databaseConnection]);
+});
+```
+
+> Note how the module only provides the controller, since this is the only dependecy we're going to directly retrieve. Expose only the neccesary dependecies!
+
 Container setup defined in a separate file, exporting the container:
 
 ```ts
@@ -69,19 +88,14 @@ import { createContainer } from "containor";
 import { Connection } from "database";
 import tokens from "./tokens";
 import config from "../etc/config";
-import TodoController from "./todos/TodoController";
-import TodoService from "./todos/TodoService";
-import TodoRepository from "./todos/TodoRepository";
+import todoModule from "./todos/module";
 
 const container = createContainer();
 
-container.add(tokens.todoController, TodoController, [tokens.todoService]);
-container.add(tokens.todoService, TodoService, [tokens.todoRepository]);
-container.add(tokens.todoRepository, TodoRepository, [
-  tokens.databaseConnection,
-]);
 container.add(tokens.databaseConnection, Connection, [tokens.connectionString]);
 container.constant(tokens.connectionString, config.db.connectionString);
+
+container.use(todoModule);
 
 export default container;
 ```
