@@ -1,15 +1,33 @@
 # Guide
 
-## Tokens
+Using Containor should be simple, let's go over the features.
 
-Dependencies are registered using tokens, these can be typed to provide proper typehinting. Tokens have a name which needs to be unique when registered at the container. It is advised to organize these in central place(s) in your reposity.
+## Basic usage
+
+Create a token for each dependency, register the dependencies with the appropriate token and arguments, that's it!
 
 ```ts
+import { createContainer, token } from "containor";
+
+class Foo {
+  constructor(bar: Bar) {
+    this.bar = bar;
+  }
+}
+
+class Bar {}
+
 const tokens = {
-  token<Foo>("foo"),
-  token<string>("bar"),
-  token("baz")
+  foo: token<Foo>("foo"),
+  bar: token<Bar>("bar"),
 };
+
+const container = createContainer();
+
+container.add(tokens.foo, Foo, [tokens.bar]);
+container.add(tokens.bar, Bar);
+
+const foo = container.get(tokens.foo); // An instance of Foo with Bar injected.
 ```
 
 ## Singletons

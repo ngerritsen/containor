@@ -1,5 +1,3 @@
-# Getting started
-
 ## Installation
 
 Containor can be installed by using any package manager using the npm repository.
@@ -42,7 +40,7 @@ container.add(tokens.bar, Bar);
 const foo = container.get(tokens.foo); // An instance of Foo with Bar injected.
 ```
 
-### Including as script tag
+## Including as script tag
 
 Containor can be included via a script tag and accessed via the `Containor` global variable:
 

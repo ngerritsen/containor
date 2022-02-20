@@ -13,7 +13,8 @@
     "lint": "eslint .; prettier . --check",
     "fix": "eslint . --fix; prettier . --write",
     "prepublishOnly": "npm run test; npm run build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "docs": "docsify serve ./docs"
   },
   "repository": {
     "type": "git",

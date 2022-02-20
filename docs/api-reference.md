@@ -41,3 +41,13 @@ Create a new token, name has to be unique.
 ##### `raw<T>(value: string) => RawArgument<T>`
 
 Create a new raw argument.
+
+## Class constructors
+
+Class constructors are available for those who prefer that.
+
+##### `new Container() => Container`
+
+##### `new Token<T>(name: string) => Token<T>`
+
+##### `new RawArgument<T>(value: T) => RawArgument<T>`
