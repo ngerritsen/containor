@@ -1,10 +1,10 @@
-<img src="./docs/images/logo.svg" alt="Containor Logo" width="80">
+<img src="https://ngerritsen.gitlab.io/containor/images/logo.svg" alt="Containor Logo" width="80">
 
 # Containor
 
 [![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
 
-Simple IOC/DI container for Javascript with Typescript support.
+Simple DI container for Javascript with Typescript support.
 
 - Supports any programming style.
 - Typescript support.
@@ -12,7 +12,7 @@ Simple IOC/DI container for Javascript with Typescript support.
 - Does not make any assumptions on your stack.
 - No dependencies! 🎂
 
-_Containor weighs just ~3.6kb minified!\*_
+_Containor weighs just ~4kb minified!\*_
 
 ## [📖 Documentation](https://ngerritsen.gitlab.io/containor)
 
