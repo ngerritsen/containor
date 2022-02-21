@@ -1,7 +1,7 @@
 {
   "name": "containor",
-  "version": "6.0.0",
-  "description": "Simple IoC container for Javascript with Typescript support",
+  "version": "6.0.1",
+  "description": "Simple DI container for Javascript with Typescript support",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
   "engines": {
@@ -34,7 +34,7 @@
   "bugs": {
     "url": "https://gitlab.com/ngerritsen/containor/issues"
   },
-  "homepage": "https://gitlab.com/ngerritsen/containor#readme",
+  "homepage": "https://ngerritsen.gitlab.io/containor",
   "files": [
     "dist",
     "lib",

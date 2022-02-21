@@ -2,7 +2,7 @@
 
 # Containor
 
-Simple IOC/DI container for Javascript with Typescript support.
+Simple DI container for Javascript with Typescript support.
 
 - Supports any programming style.
 - Typescript support.
