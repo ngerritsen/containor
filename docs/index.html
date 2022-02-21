@@ -11,15 +11,30 @@
     />
     <link
       rel="stylesheet"
-      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+      href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css"
     />
-    <link rel="icon" href="favicon.png" />
+    <link rel="icon" href="images/logo.svg" />
+    <style>
+      .sidebar > h1 img {
+        max-width: 60px;
+      }
+
+      :root {
+        --theme-color: #5d1fe5;
+        --heading-h1-font-weight: bold;
+        --heading-h2-font-weight: bold;
+        --border-radius-s: 3px;
+        --border-radius-m: 5px;
+        --border-radius-l: 7px;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>
     <script>
       window.$docsify = {
-        name: "📦 Containor",
+        name: "Containor",
+        logo: "images/logo.svg",
         subMaxLevel: 2,
         loadNavbar: true,
         loadSidebar: true,
@@ -27,6 +42,12 @@
     </script>
     <!-- Docsify v4 -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism-tomorrow.min.css"
+    />
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-typescript.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
   </body>
 </html>

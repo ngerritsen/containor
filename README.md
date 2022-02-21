@@ -1,6 +1,8 @@
-[![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
+<img src="./docs/images/logo.svg" alt="Containor Logo" width="80">
 
-# 📦 Containor
+# Containor
+
+[![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
 
 Simple IOC/DI container for Javascript with Typescript support.
 
