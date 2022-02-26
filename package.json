@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "6.0.3",
+  "version": "6.1.0",
   "description": "Simple DI container for Javascript with Typescript support",
   "main": "lib/index.js",
   "types": "types/index.d.ts",

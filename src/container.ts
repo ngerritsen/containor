@@ -8,6 +8,8 @@ import {
   Constructor,
   ProviderCallback,
   Module,
+  Creates,
+  Arguments,
 } from "./types";
 import { RawArgument } from "./raw";
 import { Token } from "./token";
@@ -26,47 +28,47 @@ class Container {
     this.dependencies = new Dependencies();
   }
 
-  public add<T>(
-    token: Token<T>,
-    creator: Creator<T>,
-    args: Argument[] = []
+  public add<T extends Creator>(
+    token: Token<Creates<T>>,
+    creator: T,
+    args?: Arguments<T>
   ): void {
-    this.register<T>(token, creator, args, "add");
+    this.register(token, creator, args, "add");
   }
 
-  public addAsync<T>(
-    token: Token<T>,
-    asyncCreator: Promise<Creator<T>>,
-    args: Argument[] = []
+  public addAsync<T extends Creator>(
+    token: Token<Creates<T>>,
+    asyncCreator: Promise<T>,
+    args?: Arguments<T>
   ): Promise<void> {
-    return this.registerAsync<T>(token, asyncCreator, args, "add", true);
+    return this.registerAsync(token, asyncCreator, args, "add", true);
   }
 
-  public share<T>(
-    token: Token<T>,
-    creator: Creator<T>,
-    args: Argument[] = []
+  public share<T extends Creator>(
+    token: Token<Creates<T>>,
+    creator: T,
+    args?: Arguments<T>
   ): void {
-    this.register<T>(token, creator, args, "share", true);
+    this.register(token, creator, args, "share", true);
   }
 
-  public shareAsync<T>(
-    token: Token<T>,
-    asyncCreator: Promise<Creator<T>>,
-    args: Argument[] = []
+  public shareAsync<T extends Creator>(
+    token: Token<Creates<T>>,
+    asyncCreator: Promise<T>,
+    args?: Arguments<T>
   ): Promise<void> {
-    return this.registerAsync<T>(token, asyncCreator, args, "share", true);
+    return this.registerAsync(token, asyncCreator, args, "share", true);
   }
 
   public constant<T>(token: Token<T>, value: T): void {
-    this.register<T>(token, () => value, [], "constant", true);
+    this.register(token, () => value, [], "constant", true);
   }
 
   public constantAsync<T>(
     token: Token<T>,
     asyncValue: Promise<T>
   ): Promise<void> {
-    return this.registerAsync<T>(
+    return this.registerAsync(
       token,
       asyncValue.then((value: T) => () => value),
       [],
@@ -75,29 +77,10 @@ class Container {
     );
   }
 
-  private registerAsync<T>(
-    token: Token<T>,
-    asyncCreator: Promise<Creator<T>>,
-    args: Argument[],
-    method: string,
-    shared = false
-  ): Promise<void> {
-    this.dependencies.reserve(token);
-
-    return asyncCreator
-      .then((creator: Creator<T>) => {
-        this.register<T>(token, creator, args, method, shared, true);
-      })
-      .catch((error) => {
-        this.dependencies.cancelReservation(token);
-        throw error;
-      });
-  }
-
-  private register<T>(
-    token: Token<T>,
-    creator: Creator<T>,
-    args: Argument[],
+  private register<T extends Creator>(
+    token: Token<Creates<T>>,
+    creator: T,
+    args: Arguments<T>,
     method: string,
     shared = false,
     reserved = false
@@ -110,6 +93,25 @@ class Container {
 
     this.dependencies.add<T>(token, creator, args, shared, reserved);
     this.requests.fulfill(token);
+  }
+
+  private registerAsync<T extends Creator>(
+    token: Token<Creates<T>>,
+    asyncCreator: Promise<T>,
+    args: Arguments<T>,
+    method: string,
+    shared = false
+  ): Promise<void> {
+    this.dependencies.reserve(token);
+
+    return asyncCreator
+      .then((creator: T) => {
+        this.register<T>(token, creator, args, method, shared, true);
+      })
+      .catch((error) => {
+        this.dependencies.cancelReservation(token);
+        throw error;
+      });
   }
 
   public get<T>(token: Token<T>): T {

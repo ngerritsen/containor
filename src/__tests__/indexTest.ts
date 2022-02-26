@@ -1,4 +1,5 @@
 import { createContainer, Container, raw, token, createModule } from "../index";
+import { Creator } from "../types";
 
 let container: Container;
 
@@ -12,16 +13,12 @@ const tokens = {
   counter: token<Counter>("counter"),
 };
 
-function baz(...args: any[]): any[] {
-  return args;
+function baz(x: string, y: string): string[] {
+  return [x, y];
 }
 
 class Dep {
-  public args: any[];
-
-  constructor(...args: any[]) {
-    this.args = args;
-  }
+  constructor(public x: string) {}
 }
 
 class Counter {
@@ -63,7 +60,7 @@ describe("Resolving dependencies", () => {
     container.add(tokens.foo, () => "foo");
     container.add(tokens.dep, Dep, [tokens.foo]);
 
-    expect(container.get(tokens.dep).args).toEqual(["foo"]);
+    expect(container.get(tokens.dep).x).toEqual("foo");
   });
 
   test("Manually resolve a dependency.", () => {
@@ -94,7 +91,7 @@ describe("Async dependency", () => {
 
     container.addAsync(
       tokens.foo,
-      Promise.resolve(() => "foo")
+      Promise.resolve((): string => "foo")
     );
 
     return promise;
@@ -103,7 +100,7 @@ describe("Async dependency", () => {
   test("Add async reserves dependency while being resolved.", () => {
     const promise = container.addAsync(
       tokens.foo,
-      Promise.resolve(() => "foo")
+      Promise.resolve((): string => "foo")
     );
 
     expect(() => {
@@ -115,7 +112,10 @@ describe("Async dependency", () => {
 
   test("Add async cancels reservation when rejected.", async () => {
     try {
-      await container.addAsync(tokens.foo, Promise.reject(new Error()));
+      await container.addAsync(
+        tokens.foo,
+        Promise.reject(new Error()) as unknown as Promise<Creator<string>>
+      );
     } catch (e) {
       // Do nothing
     }
@@ -155,7 +155,10 @@ describe("Async dependency", () => {
 
   test("Share async cancels reservation when rejected.", async () => {
     try {
-      await container.shareAsync(tokens.counter, Promise.reject(new Error()));
+      await container.shareAsync(
+        tokens.counter,
+        Promise.reject(new Error()) as unknown as Promise<Creator<Counter>>
+      );
     } catch (e) {
       // Do nothing
     }

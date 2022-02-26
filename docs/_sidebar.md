@@ -1,3 +1,4 @@
+- [Home](/)
 - [Getting started](/getting-started)
 - [Motivation](/motivation)
 - [Guide](/guide)

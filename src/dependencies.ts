@@ -1,4 +1,4 @@
-import { Creator, Dependency, Argument } from "./types";
+import { Creator, Dependency, Creates, Arguments, Argument } from "./types";
 import { Token } from "./token";
 import { invariant } from "./utils";
 
@@ -6,10 +6,10 @@ class Dependencies {
   private dependencies = new Map<string, Dependency>();
   private reservations = new Set<string>();
 
-  public add<T>(
-    token: Token,
-    creator: Creator<T>,
-    args: Argument[] = [],
+  public add<T extends Creator>(
+    token: Token<Creates<T>>,
+    creator: T,
+    args: Arguments<T>,
     shared = false,
     reserved = false
   ): void {
@@ -23,12 +23,21 @@ class Dependencies {
       `Dependency "${token.name}" has already been reserved.`
     );
 
+    const argsArr: Argument[] = Array.isArray(args) ? args : [];
+
     invariant(
-      !args.some((arg) => arg instanceof Token && arg.name === token.name),
+      !argsArr.some(
+        (arg: Argument) => arg instanceof Token && arg.name === token.name
+      ),
       `Trying to add a recursive dependency "${token.name}".`
     );
 
-    this.dependencies.set(token.name, { token, creator, args, shared });
+    this.dependencies.set(token.name, {
+      token,
+      creator,
+      args: argsArr,
+      shared,
+    });
 
     if (reserved) {
       this.cancelReservation(token);

@@ -268,3 +268,64 @@ container.use(MyModule);
 
 const foo = await container.getAsync(tokens.foo);
 ```
+
+## Typechecking
+
+Containor has Typescript support built in, which means typechecks will occur both when adding and retrieving from the container. For example:
+
+```ts
+const tokens = {
+  const token<Foo>("foo")
+};
+
+class Foo {}
+class Bar {}
+
+❌ container.add(tokens.foo, Bar); // Typescript complains, the token is typed with `Foo` and not `Bar`!
+✅ container.add(tokens.foo, Foo);
+```
+
+This also works for arguments!
+
+```ts
+const tokens = {
+  const token<Foo>("foo"),
+  const token<Bar>("bar")
+};
+
+class Foo {
+  constructor(private bar: Bar) {}
+}
+class Bar {}
+
+❌ container.add(tokens.foo, Foo, [tokens.foo]); // Typescript complains, `Foo` expects an argument of type `Bar`!
+✅ container.add(tokens.foo, Foo, [tokens.bar]);
+```
+
+For constants this also works:
+
+```ts
+const tokens = {
+  value: token<string>("constant")
+};
+
+❌ container.constant(tokens.value, 123); // Typescript complains, constant should be a `string` not a `number`!
+✅ container.constant(tokens.value, "123");
+```
+
+When retrieving dependencies, Typescript can infer the type from the token:
+
+```ts
+const tokens = {
+  value: token<string>("constant")
+};
+
+container.constant(tokens.value, "123");
+
+❌ const num: number = container.get(tokens.value); // Typescript complains, `string` not assignable to `number`!
+✅ const str: string = container.get(tokens.value);
+```
+
+### Caveats
+
+There is still a shortcoming to the Typescript typings which is planned to be solved in an upcoming version. Since the arguments parameter is optional, not defining any arguments will not trigger Typescript. Once an argument array is supplied (even if it is empty) typechecking will start.
