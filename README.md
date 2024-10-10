@@ -2,7 +2,7 @@
 
 # Containor
 
-[![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
+[![Run tests and linting](https://github.com/ngerritsen/containor/actions/workflows/test.yml/badge.svg)](https://github.com/ngerritsen/containor/actions/workflows/test.yml)
 
 Simple DI container for Javascript with Typescript support.
 
