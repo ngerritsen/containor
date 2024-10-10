@@ -1,6 +1,6 @@
 {
   "name": "containor",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Simple DI container for Javascript with Typescript support",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/ngerritsen/containor.git"
+    "url": "https://github.com/ngerritsen/containor.git"
   },
   "keywords": [
     "javascript",
@@ -32,9 +32,9 @@
   "author": "Niels Gerritsen",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/ngerritsen/containor/issues"
+    "url": "https://github.com/ngerritsen/containor/issues"
   },
-  "homepage": "https://ngerritsen.gitlab.io/containor",
+  "homepage": "https://ngerritsen.github.io/containor",
   "files": [
     "dist",
     "lib",
