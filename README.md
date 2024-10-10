@@ -2,7 +2,7 @@
 
 # Containor
 
-[![Run tests and linting](https://github.com/ngerritsen/containor/actions/workflows/test.yml/badge.svg)](https://github.com/ngerritsen/containor/actions/workflows/test.yml)
+[![Build and test](https://github.com/ngerritsen/containor/actions/workflows/test.yml/badge.svg)](https://github.com/ngerritsen/containor/actions/workflows/test.yml)
 
 Simple DI container for Javascript with Typescript support.
 
