@@ -1,4 +1,4 @@
-<img src="https://ngerritsen.gitlab.io/containor/images/logo.svg" alt="Containor Logo" width="80">
+<img src="https://ngerritsen.github.io/containor/images/logo.svg" alt="Containor Logo" width="80">
 
 # Containor
 
@@ -14,13 +14,13 @@ Simple DI container for Javascript with Typescript support.
 
 _Containor weighs just ~4kb minified!\*_
 
-## [📖 Documentation](https://ngerritsen.gitlab.io/containor)
+## [📖 Documentation](https://ngerritsen.github.io/containor)
 
-- [Getting Started](https://ngerritsen.gitlab.io/containor/#/getting-started)
-- [Motivation](https://ngerritsen.gitlab.io/containor/#/motivation)
-- [Guide](https://ngerritsen.gitlab.io/containor/#/guide)
-- [API Reference](https://ngerritsen.gitlab.io/containor/#/api-reference)
-- [Examples](https://ngerritsen.gitlab.io/containor/#/examples/)
+- [Getting Started](https://ngerritsen.github.io/containor/#/getting-started)
+- [Motivation](https://ngerritsen.github.io/containor/#/motivation)
+- [Guide](https://ngerritsen.github.io/containor/#/guide)
+- [API Reference](https://ngerritsen.github.io/containor/#/api-reference)
+- [Examples](https://ngerritsen.github.io/containor/#/examples/)
 
 ## Getting started
 
