@@ -13,14 +13,14 @@ export type Creator<T = unknown> = Constructor<T> | Func<T>;
 export type Creates<T extends Creator> = T extends Constructor
   ? InstanceType<T>
   : T extends Func
-  ? ReturnType<T>
-  : never;
+    ? ReturnType<T>
+    : never;
 
 export type CreatorParameters<T extends Creator> = T extends Constructor
   ? ConstructorParameters<T>
   : T extends Func
-  ? Parameters<T>
-  : never;
+    ? Parameters<T>
+    : never;
 
 export type Arguments<T extends Creator> = ToArguments<CreatorParameters<T>>;
 

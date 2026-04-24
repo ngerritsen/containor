@@ -1,11 +1,5 @@
-import { terser } from "rollup-plugin-terser";
-import typescript from "rollup-plugin-typescript2";
-
-const tsNoDeclaration = {
-  compilerOptions: {
-    declaration: false,
-  },
-};
+import terser from "@rollup/plugin-terser";
+import typescript from "@rollup/plugin-typescript";
 
 export default [
   {
@@ -15,7 +9,7 @@ export default [
       exports: "named",
       format: "cjs",
     },
-    plugins: [typescript({ useTsconfigDeclarationDir: true })],
+    plugins: [typescript()],
   },
   {
     input: "src/index.ts",
@@ -25,12 +19,7 @@ export default [
       exports: "named",
       name: "Containor",
     },
-    plugins: [
-      typescript({
-        tsconfigOverride: tsNoDeclaration,
-      }),
-      terser(),
-    ],
+    plugins: [typescript(), terser()],
   },
   {
     input: "src/index.ts",
@@ -40,10 +29,6 @@ export default [
       exports: "named",
       name: "Containor",
     },
-    plugins: [
-      typescript({
-        tsconfigOverride: tsNoDeclaration,
-      }),
-    ],
+    plugins: [typescript()],
   },
 ];

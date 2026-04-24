@@ -31,7 +31,7 @@ class Container {
   public add<T extends Creator>(
     token: Token<Creates<T>>,
     creator: T,
-    args?: Arguments<T>
+    args?: Arguments<T>,
   ): void {
     this.register(token, creator, args, "add");
   }
@@ -39,7 +39,7 @@ class Container {
   public addAsync<T extends Creator>(
     token: Token<Creates<T>>,
     asyncCreator: Promise<T>,
-    args?: Arguments<T>
+    args?: Arguments<T>,
   ): Promise<void> {
     return this.registerAsync(token, asyncCreator, args, "add", true);
   }
@@ -47,7 +47,7 @@ class Container {
   public share<T extends Creator>(
     token: Token<Creates<T>>,
     creator: T,
-    args?: Arguments<T>
+    args?: Arguments<T>,
   ): void {
     this.register(token, creator, args, "share", true);
   }
@@ -55,7 +55,7 @@ class Container {
   public shareAsync<T extends Creator>(
     token: Token<Creates<T>>,
     asyncCreator: Promise<T>,
-    args?: Arguments<T>
+    args?: Arguments<T>,
   ): Promise<void> {
     return this.registerAsync(token, asyncCreator, args, "share", true);
   }
@@ -66,14 +66,14 @@ class Container {
 
   public constantAsync<T>(
     token: Token<T>,
-    asyncValue: Promise<T>
+    asyncValue: Promise<T>,
   ): Promise<void> {
     return this.registerAsync(
       token,
       asyncValue.then((value: T) => () => value),
       [],
       "constant",
-      true
+      true,
     );
   }
 
@@ -83,7 +83,7 @@ class Container {
     args: Arguments<T>,
     method: string,
     shared = false,
-    reserved = false
+    reserved = false,
   ): void {
     validateArguments(method, [
       [token, Token, true],
@@ -100,7 +100,7 @@ class Container {
     asyncCreator: Promise<T>,
     args: Arguments<T>,
     method: string,
-    shared = false
+    shared = false,
   ): Promise<void> {
     this.dependencies.reserve(token);
 
@@ -147,7 +147,7 @@ class Container {
 
     const existing = tokens.find(
       (token) =>
-        this.dependencies.has(token) || this.dependencies.isReserved(token)
+        this.dependencies.has(token) || this.dependencies.isReserved(token),
     );
 
     invariant(
@@ -156,7 +156,7 @@ class Container {
         existing && this.dependencies.isReserved(existing)
           ? "is already reserved"
           : "already exists"
-      }.`
+      }.`,
     );
 
     if (tokens.some((token) => this.requests.has(token))) {
@@ -169,7 +169,7 @@ class Container {
 
   public provideAsync(
     tokens: Token[],
-    asyncProvider: Promise<ProviderCallback>
+    asyncProvider: Promise<ProviderCallback>,
   ): void {
     asyncProvider.then((provider) => {
       this.provide(tokens, provider);
@@ -181,7 +181,7 @@ class Container {
 
     this.provide(
       moduleInstance.provides,
-      moduleInstance.register.bind(moduleInstance)
+      moduleInstance.register.bind(moduleInstance),
     );
   }
 
@@ -201,7 +201,7 @@ class Container {
 
   private instantiateAsync<T>(
     dependency: Dependency<T>,
-    callback: GetCallback<T>
+    callback: GetCallback<T>,
   ): any {
     if (dependency.shared) {
       return dependency.instance
@@ -218,10 +218,10 @@ class Container {
 
   private createAsync<T>(
     dependency: Dependency<T>,
-    callback: GetCallback<T>
+    callback: GetCallback<T>,
   ): void {
     this.resolveAsync(dependency.args, (resolvedArgs: unknown[]) =>
-      callback(this.construct<T>(dependency.creator, resolvedArgs))
+      callback(this.construct<T>(dependency.creator, resolvedArgs)),
     );
   }
 
@@ -233,7 +233,7 @@ class Container {
 
   private createSingleAsync<T>(
     dependency: Dependency<T>,
-    callback: GetCallback<T>
+    callback: GetCallback<T>,
   ): any {
     this.createAsync(dependency, (newInstance: T) => {
       dependency.instance = newInstance;
@@ -243,23 +243,24 @@ class Container {
 
   private resolve(args: Argument[]): unknown[] {
     return args.map((arg) =>
-      arg instanceof RawArgument ? arg.value : this.get(arg)
+      arg instanceof RawArgument ? arg.value : this.get(arg),
     );
   }
 
   private resolveAsync(
     args: Argument[],
-    callback: (resolvedArgs: unknown[]) => void
+    callback: (resolvedArgs: unknown[]) => void,
   ): void {
     args.reduceRight(
-      (next, arg) => (resolvedArgs: unknown[]) => {
-        return arg instanceof RawArgument
-          ? next([...resolvedArgs, arg.value])
-          : this.getAsync(arg).then((dependency) =>
-              next([...resolvedArgs, dependency])
-            );
-      },
-      callback
+      (next, arg) =>
+        (resolvedArgs: unknown[]): void | Promise<void> => {
+          return arg instanceof RawArgument
+            ? next([...resolvedArgs, arg.value])
+            : this.getAsync(arg).then((dependency) =>
+                next([...resolvedArgs, dependency]),
+              );
+        },
+      callback,
     )([]);
   }
 

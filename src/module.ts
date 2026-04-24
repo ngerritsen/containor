@@ -3,7 +3,7 @@ import { Module, ProviderCallback } from "./types";
 
 function createModule(
   provides: Token[],
-  register: ProviderCallback
+  register: ProviderCallback,
 ): () => Module {
   return () => ({
     provides,

@@ -22,7 +22,7 @@ class Requests {
 
   private remove(token: Token): void {
     this.requests = this.requests.filter(
-      (request) => request.token.name !== token.name
+      (request) => request.token.name !== token.name,
     );
   }
 }

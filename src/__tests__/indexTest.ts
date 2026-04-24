@@ -91,7 +91,7 @@ describe("Async dependency", () => {
 
     container.addAsync(
       tokens.foo,
-      Promise.resolve((): string => "foo")
+      Promise.resolve((): string => "foo"),
     );
 
     return promise;
@@ -100,7 +100,7 @@ describe("Async dependency", () => {
   test("Add async reserves dependency while being resolved.", () => {
     const promise = container.addAsync(
       tokens.foo,
-      Promise.resolve((): string => "foo")
+      Promise.resolve((): string => "foo"),
     );
 
     expect(() => {
@@ -114,9 +114,9 @@ describe("Async dependency", () => {
     try {
       await container.addAsync(
         tokens.foo,
-        Promise.reject(new Error()) as unknown as Promise<Creator<string>>
+        Promise.reject(new Error()) as unknown as Promise<Creator<string>>,
       );
-    } catch (e) {
+    } catch {
       // Do nothing
     }
 
@@ -143,7 +143,7 @@ describe("Async dependency", () => {
   test("Share async reserves dependency while being resolved.", () => {
     const promise = container.shareAsync(
       tokens.counter,
-      Promise.resolve(Counter)
+      Promise.resolve(Counter),
     );
 
     expect(() => {
@@ -157,9 +157,9 @@ describe("Async dependency", () => {
     try {
       await container.shareAsync(
         tokens.counter,
-        Promise.reject(new Error()) as unknown as Promise<Creator<Counter>>
+        Promise.reject(new Error()) as unknown as Promise<Creator<Counter>>,
       );
-    } catch (e) {
+    } catch {
       // Do nothing
     }
 
@@ -191,7 +191,7 @@ describe("Async dependency", () => {
   test("Constant async cancels reservation when rejected.", async () => {
     try {
       await container.constantAsync(tokens.foo, Promise.reject(new Error()));
-    } catch (e) {
+    } catch {
       // Do nothing
     }
 
@@ -230,12 +230,12 @@ describe("Async dependency", () => {
     setTimeout(
       () =>
         container.add(tokens.foo, (str: string) => "foo" + str, [tokens.bar]),
-      9
+      9,
     );
     setTimeout(
       () =>
         container.add(tokens.bar, (str: string) => "bar" + str, [tokens.qux]),
-      3
+      3,
     );
     setTimeout(() => container.add(tokens.qux, () => "qux"), 6);
 
@@ -269,7 +269,7 @@ describe("Providers", () => {
       [tokens.foo, tokens.bar],
       Promise.resolve((c) => {
         c.add(tokens.foo, () => "foo");
-      })
+      }),
     );
 
     return container.getAsync(tokens.foo).then((str: string) => {
@@ -283,7 +283,7 @@ describe("Modules", () => {
     container.use(
       createModule([tokens.foo, tokens.bar], (c) => {
         c.add(tokens.foo, () => "foo");
-      })
+      }),
     );
 
     return container.getAsync(tokens.foo).then((str: string) => {
@@ -295,7 +295,7 @@ describe("Modules", () => {
     container.use(
       createModule([tokens.foo, tokens.bar], (c) => {
         c.add(tokens.foo, () => "foo");
-      })
+      }),
     );
 
     const str = container.get(tokens.foo);
@@ -308,8 +308,8 @@ describe("Modules", () => {
       Promise.resolve(
         createModule([tokens.foo, tokens.bar], (c) => {
           c.add(tokens.foo, () => "foo");
-        })
-      )
+        }),
+      ),
     );
     return container.getAsync(tokens.foo).then((str: string) => {
       expect(str).toBe("foo");
@@ -347,7 +347,7 @@ describe("Runtime errors", () => {
     container.add(tokens.foo, () => "");
 
     expect(() => container.add(tokens.foo, () => "")).toThrowError(
-      'Dependency "foo" already exists.'
+      'Dependency "foo" already exists.',
     );
   });
 
@@ -355,13 +355,13 @@ describe("Runtime errors", () => {
     container.add(tokens.foo, () => "");
 
     expect(() => container.share(tokens.foo, () => "")).toThrowError(
-      'Dependency "foo" already exists.'
+      'Dependency "foo" already exists.',
     );
   });
 
   test("Get throws when the dependency does not exist.", () => {
     expect(() => container.get(tokens.foo)).toThrowError(
-      'Dependency "foo" does not exist.'
+      'Dependency "foo" does not exist.',
     );
   });
 
@@ -369,7 +369,7 @@ describe("Runtime errors", () => {
     container.add(tokens.foo, () => "");
 
     expect(() => container.provide([tokens.foo], () => {})).toThrowError(
-      'Trying to provide dependency "foo" which already exists.'
+      'Trying to provide dependency "foo" which already exists.',
     );
   });
 
@@ -377,7 +377,7 @@ describe("Runtime errors", () => {
     container.provide([tokens.foo], () => {});
 
     expect(() => container.provide([tokens.foo], () => {})).toThrowError(
-      'Dependency "foo" is already being provided.'
+      'Dependency "foo" is already being provided.',
     );
   });
 });
@@ -399,55 +399,55 @@ describe("Invalid argument errors", () => {
 
   test("Add throws when the token argument is invalid.", () => {
     expect(() => container.add(123)).toThrowError(
-      'First argument of "add" should be of type: "Token", received: "number".'
+      'First argument of "add" should be of type: "Token", received: "number".',
     );
   });
 
   test("Add throws when the creator argument is invalid.", () => {
     expect(() => container.add(tokens.foo, "dep")).toThrowError(
-      'Second argument of "add" should be of type: "function", received: "string".'
+      'Second argument of "add" should be of type: "function", received: "string".',
     );
   });
 
   test("Add throws when the arguments argument is invalid.", () => {
     expect(() => container.add(tokens.foo, () => "", {})).toThrowError(
-      'Third argument of "add" should be of type: "array", received: "object".'
+      'Third argument of "add" should be of type: "array", received: "object".',
     );
   });
 
   test("Share throws when the token argument is invalid.", () => {
     expect(() => container.share(null)).toThrowError(
-      'First argument of "share" should be of type: "Token", received: "object".'
+      'First argument of "share" should be of type: "Token", received: "object".',
     );
   });
 
   test("Share throws when the creator argument is invalid.", () => {
     expect(() => container.share(tokens.foo, 123)).toThrowError(
-      'Second argument of "share" should be of type: "function", received: "number".'
+      'Second argument of "share" should be of type: "function", received: "number".',
     );
   });
 
   test("Share throws when the arguments argument is invalid.", () => {
     expect(() => container.share(tokens.foo, () => "", true)).toThrowError(
-      'Third argument of "share" should be of type: "array", received: "boolean".'
+      'Third argument of "share" should be of type: "array", received: "boolean".',
     );
   });
 
   test("Get throws when the token argument is invalid.", () => {
     expect(() => container.get(123)).toThrowError(
-      'First argument of "get" should be of type: "Token", received: "number".'
+      'First argument of "get" should be of type: "Token", received: "number".',
     );
   });
 
   test("GetAsync throws when the token argument is invalid.", () => {
     expect(() => container.getAsync(123)).toThrowError(
-      'First argument of "getAsync" should be of type: "Token", received: "number".'
+      'First argument of "getAsync" should be of type: "Token", received: "number".',
     );
   });
 
   test("Provide throws when the tokens argument is invalid.", () => {
     expect(() => container.provide(["foo"])).toThrowError(
-      "Trying to provide non token argument."
+      "Trying to provide non token argument.",
     );
   });
 });

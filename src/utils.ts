@@ -4,7 +4,7 @@ const indices = ["First", "Second", "Third"];
 
 export function validateArguments(
   method: string,
-  options: [any, string | Constructor<unknown>, boolean?][]
+  options: [any, string | Constructor<unknown>, boolean?][],
 ): void {
   options.map(([value, expected, required], index) => {
     const expectedName =
@@ -16,14 +16,14 @@ export function validateArguments(
       required ? matches : value === undefined || value === null || matches,
       `${
         indices[index]
-      } argument of "${method}" should be of type: "${expectedName}", received: "${typeof value}".`
+      } argument of "${method}" should be of type: "${expectedName}", received: "${typeof value}".`,
     );
   });
 }
 
 function typeMatches(
   expected: string | Constructor<unknown>,
-  value: any
+  value: any,
 ): boolean {
   if (typeof expected === "string") {
     const type = Array.isArray(value) ? "array" : typeof value;

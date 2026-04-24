@@ -11,25 +11,25 @@ class Dependencies {
     creator: T,
     args: Arguments<T>,
     shared = false,
-    reserved = false
+    reserved = false,
   ): void {
     invariant(
       !this.dependencies.get(token.name),
-      `Dependency "${token.name}" already exists.`
+      `Dependency "${token.name}" already exists.`,
     );
 
     invariant(
       reserved || !this.reservations.has(token.name),
-      `Dependency "${token.name}" has already been reserved.`
+      `Dependency "${token.name}" has already been reserved.`,
     );
 
     const argsArr: Argument[] = Array.isArray(args) ? args : [];
 
     invariant(
       !argsArr.some(
-        (arg: Argument) => arg instanceof Token && arg.name === token.name
+        (arg: Argument) => arg instanceof Token && arg.name === token.name,
       ),
-      `Trying to add a recursive dependency "${token.name}".`
+      `Trying to add a recursive dependency "${token.name}".`,
     );
 
     this.dependencies.set(token.name, {
@@ -57,7 +57,7 @@ class Dependencies {
   public reserve(token: Token): void {
     invariant(
       !this.reservations.has(token.name),
-      `Dependency "${token.name}" is already reserved.`
+      `Dependency "${token.name}" is already reserved.`,
     );
 
     this.reservations.add(token.name);

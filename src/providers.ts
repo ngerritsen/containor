@@ -10,22 +10,22 @@ class Providers {
     tokens: Token[],
     callback: () => void,
     called = false,
-    reserved = false
+    reserved = false,
   ): void {
     tokens.forEach((token) => {
       invariant(
         token instanceof Token,
-        `Trying to provide non token argument.`
+        `Trying to provide non token argument.`,
       );
 
       invariant(
         reserved || !this.reservations.has(token.name),
-        `Provider for "${token.name}" is already reserved.`
+        `Provider for "${token.name}" is already reserved.`,
       );
 
       invariant(
         !this.has(token),
-        `Dependency "${token.name}" is already being provided.`
+        `Dependency "${token.name}" is already being provided.`,
       );
     });
 
@@ -56,15 +56,15 @@ class Providers {
       (provider) =>
         !provider.called &&
         provider.tokens.some(
-          (providerToken) => providerToken.name === token.name
-        )
+          (providerToken) => providerToken.name === token.name,
+        ),
     );
   }
 
   public reserve(token: Token): void {
     invariant(
       !this.reservations.has(token.name),
-      `Provider for "${token.name}" is already reserved.`
+      `Provider for "${token.name}" is already reserved.`,
     );
 
     this.reservations.add(token.name);
