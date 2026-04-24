@@ -1,4 +1,4 @@
-[![Build Status](https://gitlab.com/ngerritsen/containor/badges/master/pipeline.svg)](https://gitlab.com/ngerritsen/containor/-/commits/master)
+[![Build and test](https://github.com/ngerritsen/containor/actions/workflows/test.yml/badge.svg)](https://github.com/ngerritsen/containor/actions/workflows/test.yml)
 
 # Containor
 
